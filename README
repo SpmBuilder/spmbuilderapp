@@ -1,0 +1,23 @@
+# 📊 Streamlit Production App
+
+A modular Streamlit application designed for scalable dashboard development.
+
+## 🚀 Features
+- Multi-page structure
+- Modular Python architecture
+- Environment variable support
+- Ready for cloud deployment
+
+## ⚙️ Setup
+
+```bash
+git clone https://github.com/SpmBuilder/spmbuilderapp.git
+cd streamlit-app
+
+python -m venv venv
+venv\Scripts\activate   # Windows
+source venv/bin/activate  # Mac/Linux
+
+pip install -r requirements.txt
+
+streamlit run app.py
