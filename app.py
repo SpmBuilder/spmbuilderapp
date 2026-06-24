@@ -1,117 +1,166 @@
+"""
+BUILDER APP — Main Entry Point
+"""
+from pathlib import Path
 import streamlit as st
-from components.sidebar import render_sidebar
+from config.settings import APP_CONFIG, apply_global_styles
+from modules.db_connector import render as db_render
+from modules.data_uploader import render as upload_render
+from modules.data_merger import render as merger_render
+from modules.data_validator import render as validator_render
+from modules.data_analytics import render as analytics_render
+from modules.template_mapper import render as template_render
+from modules.report_generator import render as report_render
 
 st.set_page_config(
-    page_title="BUILDER Platform",
-    page_icon= "images/image.png",
-    layout="wide"
+    page_title=APP_CONFIG["title"],
+    page_icon=APP_CONFIG["icon"],
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        "Get Help": None,
+        "Report a bug": None,
+        "About": f"**{APP_CONFIG['title']}** v{APP_CONFIG['version']}",
+    },
 )
 
-render_sidebar()
-
-page = st.session_state.page
+apply_global_styles()
 
 
-# =========================
-# ROUTER
-# =========================
-if page == "dashboard":
-    from modules.dashboard import show_dashboard
-    show_dashboard()
+# ── Sidebar navigation ────────────────────────────────────────────────────────
+def render_sidebar() -> str:
 
-elif page == "data_sources":
-    from modules.data_sources import show_data_sources
-    show_data_sources()
+    with st.sidebar:
 
-elif page == "repository":
-    from modules.repository import show_repository
-    show_repository()
+        # =========================
+        # BRAND
+        # =========================
 
-elif page == "validation":
-    from modules.validation import show_validation
-    show_validation()
+        st.markdown(
+            """
+            <div class="sidebar-brand">
+                <div class="brand-title">
+                    BUILDER
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
-elif page == "merge":
-    from modules.merge import show_merge
-    show_merge()
+        st.divider()
 
-elif page == "query_builder":
-    from modules.query_builder import show_query_builder
-    show_query_builder()
+        # =========================
+        # NAVIGATION
+        # =========================
 
-elif page == "analytics":
-    from modules.analytics import show_analytics
-    show_analytics()
+        nav_items = {
+            "🗄️ Database":      "Database",
+            "📂 Data Upload":   "Data Upload",
+            "🔗 Data Merger":   "Data Merger",
+            "✅ Validator":     "Validator",
+            "📊 Analytics":     "Analytics",
+            "🗂️ Template Map":  "Template Map",
+            "📄 Reports":       "Reports",
+        }
 
-elif page == "templates":
-    from modules.templates import show_templates
-    show_templates()
+        if "active_page" not in st.session_state:
+            st.session_state.active_page = "Database"
 
-elif page == "reports":
-    from modules.reports import show_reports
-    show_reports()
+        for label, page in nav_items.items():
 
-elif page == "scheduler":
-    from modules.scheduler import show_scheduler
-    show_scheduler()
+            active = st.session_state.active_page == page
 
-elif page == "users":
-    from modules.users import show_users
-    show_users()
+            if active:
+                st.markdown(
+                    '<div class="nav-btn-active">',
+                    unsafe_allow_html=True,
+                )
 
-elif page == "settings":
-    from modules.settings import show_settings
-    show_settings()
+            clicked = st.button(
+                label,
+                key=f"nav_{page}",
+                use_container_width=True,
+            )
 
-import streamlit as st
+            if active:
+                st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown(
-    """
-    <style>
+            if clicked:
+                st.session_state.active_page = page
+                st.rerun()
 
-    /* Global background */
-    .stApp {
-        background-color: #F7F9FC;
+        st.divider()
+
+        # =========================
+        # STATUS
+        # =========================
+
+        db_ok = st.session_state.get(
+            "db_connected",
+            False
+        )
+
+        status_class = (
+            "badge-active"
+            if db_ok
+            else "badge-inactive"
+        )
+
+        status_text = (
+            "DATABASE CONNECTED"
+            if db_ok
+            else "NO DATABASE"
+        )
+
+        st.markdown(
+            f"""
+            <div style="margin-top:12px;">
+                <span class="badge {status_class}">
+                    {status_text}
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        st.markdown(
+            f"""
+            <div style="
+                margin-top:20px;
+                color:#71717A;
+                font-size:0.75rem;
+                text-align:center;
+            ">
+                Version {APP_CONFIG["version"]}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    return st.session_state.active_page
+
+
+# ── Page dispatcher ───────────────────────────────────────────────────────────
+
+def main() -> None:
+    page = render_sidebar()
+
+    dispatch = {
+        "Database":     db_render,
+        "Data Upload":  upload_render,
+        "Data Merger":  merger_render,
+        "Validator":    validator_render,
+        "Analytics":    analytics_render,
+        "Template Map": template_render,
+        "Reports":      report_render,
     }
 
-    /* Sidebar styling */
-    section[data-testid="stSidebar"] {
-        background-color: #0B1F3B;
-    }
+    renderer = dispatch.get(page)
+    if renderer:
+        renderer()
+    else:
+        st.error("Page not found.")
 
-    /* Sidebar text */
-    section[data-testid="stSidebar"] * {
-        color: white;
-    }
 
-    /* Metric cards */
-    div[data-testid="metric-container"] {
-        background-color: #FFFFFF;
-        border: 1px solid #E5E7EB;
-        padding: 12px;
-        border-radius: 10px;
-        box-shadow: 0px 1px 3px rgba(0,0,0,0.05);
-    }
-
-    /* Buttons */
-    .stButton > button {
-        background-color: #1E5EFF;
-        color: white;
-        border-radius: 8px;
-        border: none;
-    }
-
-    .stButton > button:hover {
-        background-color: #1749CC;
-        color: white;
-    }
-
-    /* Dataframes */
-    .stDataFrame {
-        border-radius: 10px;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+if __name__ == "__main__":
+    main()

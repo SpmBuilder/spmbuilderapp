@@ -1,0 +1,35 @@
+.stDataFrame,
+[data-testid="stDataFrame"] {
+
+    background: #151515 !important;
+
+    border: 1px solid #262626 !important;
+
+    border-radius: 16px !important;
+
+    overflow: hidden;
+}
+
+[data-testid="stDataFrame"] th {
+
+    background: #101010 !important;
+
+    color: #71717A !important;
+
+    font-size: 0.72rem !important;
+
+    text-transform: uppercase !important;
+
+    letter-spacing: 0.12em !important;
+
+    border-bottom: 1px solid #262626 !important;
+}
+
+[data-testid="stDataFrame"] td {
+
+    color: #D4D4D8 !important;
+
+    font-size: 0.82rem !important;
+
+    border-bottom: 1px solid #1E1E1E !important;
+}

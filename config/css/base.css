@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html,
+body,
+[class*="css"] {
+
+    font-family: 'Inter', sans-serif;
+}
+
+#MainMenu,
+footer,
+header {
+    visibility: hidden;
+}
+
+.stDeployButton {
+    display: none;
+}
+
+.stApp {
+
+    background-color: #0A0A0A;
+    color: #FAFAFA;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #111111;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2A2A2A;
+    border-radius: 999px;
+}
+
+/* Main layout */
+
+.main .block-container {
+
+    max-width: 1500px;
+
+    padding-top: 2rem;
+
+    padding-left: 2rem;
+
+    padding-right: 2rem;
+
+    padding-bottom: 3rem;
+}
+
+/* Page Header */
+
+.page-header {
+
+    margin-bottom: 2rem;
+
+    border-bottom: 1px solid #262626;
+
+    padding-bottom: 1rem;
+}
+
+.page-header h1 {
+
+    color: #FAFAFA;
+
+    font-size: 2rem;
+
+    font-weight: 700;
+
+    letter-spacing: -0.03em;
+
+    margin: 0;
+}
+
+.page-header p {
+
+    color: #71717A;
+
+    margin-top: 0.5rem;
+
+    font-size: 0.9rem;
+}

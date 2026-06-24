@@ -1,0 +1,85 @@
+.card {
+
+    background: #151515;
+
+    border: 1px solid #262626;
+
+    border-radius: 16px;
+
+    padding: 1.5rem;
+
+    margin-bottom: 1rem;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02),
+        0 8px 30px rgba(0,0,0,0.25);
+}
+
+.card-title {
+
+    color: #71717A;
+
+    font-size: 0.72rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.12em;
+
+    margin-bottom: 0.75rem;
+}
+
+.card-value {
+
+    color: #FAFAFA;
+
+    font-size: 2rem;
+
+    font-weight: 700;
+
+    letter-spacing: -0.03em;
+}
+
+.card-sub {
+
+    color: #71717A;
+
+    margin-top: 0.5rem;
+
+    font-size: 0.8rem;
+}
+
+/* Streamlit metrics */
+
+div[data-testid="metric-container"] {
+
+    background: #151515;
+
+    border: 1px solid #262626;
+
+    border-radius: 16px;
+
+    padding: 1rem;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02);
+}
+
+div[data-testid="metric-container"] {
+
+    background:#151515 !important;
+
+    border:1px solid #262626 !important;
+
+    border-radius:16px !important;
+
+    padding:1rem !important;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,0.02),
+        0 8px 30px rgba(0,0,0,0.20);
+}
+
+div[data-testid="metric-container"] label {
+
+    color:#71717A !important;
+}
