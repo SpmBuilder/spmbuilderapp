@@ -1,0 +1,139 @@
+[data-testid="stSidebar"] {
+    background: var(--sb-black);
+    border-right: 1px solid var(--sb-border);
+    min-width: 260px !important;
+    max-width: 260px !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 1.5rem;
+}
+
+/* Brand */
+
+.sidebar-brand {
+    margin-bottom: 0.5rem;
+    padding: 0 0.25rem;
+}
+
+.brand-title {
+    color: var(--sb-text);
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.brand-subtitle {
+    color: var(--sb-teal);
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+/* Nav buttons */
+
+[data-testid="stSidebar"] .stButton button {
+    width: 100%;
+    height: 42px;
+    background: transparent !important;
+    color: var(--sb-muted) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    text-align: left !important;
+    font-family: var(--font-body) !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    transition: all 0.15s ease;
+    padding-left: 0.9rem !important;
+}
+
+[data-testid="stSidebar"] .stButton button:hover {
+    background: var(--sb-teal-tint) !important;
+    color: var(--sb-teal-light) !important;
+    transform: translateX(2px);
+}
+
+.nav-btn-active button {
+    background: var(--sb-teal) !important;
+    color: var(--sb-black) !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 14px var(--sb-teal-glow);
+}
+
+.nav-btn-active button:hover {
+    background: var(--sb-teal-light) !important;
+    color: var(--sb-black) !important;
+    transform: none;
+}
+
+/* ============================================================
+   Expand highlight — wide wave along the right edge
+   ============================================================
+*/
+
+[data-testid="stSidebar"] {
+    transition: min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes sidebarOpenHighlight {
+    0% {
+        box-shadow: 8px 0 0 0 rgba(0, 169, 157, 0);
+    }
+    35% {
+        box-shadow: 8px 0 70px 8px rgba(0, 169, 157, 0.55),
+                    16px 0 100px 14px rgba(0, 114, 188, 0.4);
+    }
+    100% {
+        box-shadow: 8px 0 0 0 rgba(0, 169, 157, 0);
+    }
+}
+
+[data-testid="stSidebar"][aria-expanded="true"] {
+    animation: sidebarOpenHighlight 1s ease forwards;
+}
+
+/* ============================================================
+   Collapsed handle — continuous pulse
+   ============================================================
+   Switched from a one-shot animation (which only played on the
+   element's first-ever mount, then sat frozen on every close
+   after that) to an infinite loop. This is guaranteed to be
+   visibly alive every single time the sidebar is collapsed,
+   regardless of whether Streamlit re-mounts this element or just
+   toggles its visibility — it doesn't rely on catching a "fresh
+   trigger" at all.
+*/
+
+@keyframes collapsedControlPulse {
+    0%, 100% {
+        box-shadow: 0 0 18px rgba(0, 169, 157, 0.45),
+                    0 0 30px rgba(0, 114, 188, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 34px rgba(0, 169, 157, 0.75),
+                    0 0 55px rgba(0, 114, 188, 0.55);
+    }
+}
+
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"] {
+    background: linear-gradient(180deg, var(--sb-teal), var(--sb-blue)) !important;
+    border-radius: 0 10px 10px 0 !important;
+    animation: collapsedControlPulse 2s ease-in-out infinite;
+    transition: transform 0.2s ease;
+}
+
+[data-testid="stSidebarCollapsedControl"]:hover,
+[data-testid="collapsedControl"]:hover {
+    transform: translateX(2px);
+}
+
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="collapsedControl"] svg {
+    fill: var(--sb-black) !important;
+}

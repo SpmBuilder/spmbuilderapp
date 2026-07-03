@@ -1,0 +1,71 @@
+.card {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-left: 3px solid var(--sb-teal);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 8px 30px rgba(0, 0, 0, 0.35);
+    transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.card:hover {
+    border-color: var(--sb-blue);
+    transform: translateY(-1px);
+}
+
+.card-title {
+    color: var(--sb-muted);
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+}
+
+.card-value {
+    color: var(--sb-text);
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.card-sub {
+    color: var(--sb-muted);
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Streamlit native metrics */
+
+div[data-testid="metric-container"] {
+    background: var(--sb-surface) !important;
+    border: 1px solid var(--sb-border) !important;
+    border-left: 3px solid var(--sb-teal) !important;
+    border-radius: 14px !important;
+    padding: 1rem !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 8px 30px rgba(0, 0, 0, 0.3) !important;
+    transition: border-color 0.15s ease;
+}
+
+div[data-testid="metric-container"]:hover {
+    border-left-color: var(--sb-blue) !important;
+}
+
+div[data-testid="metric-container"] label {
+    color: var(--sb-muted) !important;
+}
+
+div[data-testid="metric-container"] [data-testid="stMetricValue"] {
+    color: var(--sb-text) !important;
+    font-family: var(--font-heading) !important;
+}
+
+div[data-testid="metric-container"] [data-testid="stMetricDelta"] {
+    color: var(--sb-teal-light) !important;
+}

@@ -1,0 +1,27 @@
+.stDataFrame,
+[data-testid="stDataFrame"] {
+    background: var(--sb-surface) !important;
+    border: 1px solid var(--sb-border) !important;
+    border-radius: 14px !important;
+    overflow: hidden;
+}
+
+[data-testid="stDataFrame"] th {
+    background: var(--sb-black) !important;
+    color: var(--sb-teal) !important;
+    font-size: 0.72rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid var(--sb-border) !important;
+}
+
+[data-testid="stDataFrame"] td {
+    color: #D4D4D8 !important;
+    font-size: 0.82rem !important;
+    border-bottom: 1px solid #1E1E1E !important;
+}
+
+[data-testid="stDataFrame"] tr:hover td {
+    background: var(--sb-teal-tint) !important;
+}

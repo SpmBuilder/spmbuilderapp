@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==========================================================================
+   SBC BUILDER — Design tokens
+   Palette matches Security Bank's "Perfect Harmony" mark: teal (top swirl)
+   as the primary accent, blue (bottom swirl) as the secondary accent,
+   both set against black. Update the two hex values below if you get
+   exact values from an official brand kit — everything else inherits them.
+   ========================================================================== */
+:root {
+    --sb-teal:          #00A99D;
+    --sb-teal-light:    #3FC9BD;
+    --sb-teal-dark:     #00786F;
+    --sb-teal-tint:     rgba(0, 169, 157, 0.10);
+    --sb-teal-glow:     rgba(0, 169, 157, 0.25);
+
+    --sb-blue:          #0072BC;
+    --sb-blue-light:    #4DA6D9;
+    --sb-blue-dark:     #00558A;
+    --sb-blue-tint:     rgba(0, 114, 188, 0.10);
+
+    --sb-accent-gradient: linear-gradient(90deg, var(--sb-teal), var(--sb-blue));
+
+    --sb-black:         #000000;
+    --sb-surface:       #131313;
+    --sb-surface-2:     #1A1A1A;
+    --sb-border:        #2A2A2A;
+
+    --sb-text:          #FAFAFA;
+    --sb-muted:         #9CA3AF;
+    --sb-muted-2:       #6B7280;
+
+    --font-heading:     'Poppins', sans-serif;
+    --font-body:        'Inter', sans-serif;
+}
+
+html,
+body,
+[class*="css"] {
+    font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
+
+/* Only hiding these two — both have been stable, safe selectors across
+   Streamlit versions for years and never contain the sidebar toggle.
+   Deliberately NOT touching <header> or any [data-testid="stToolbar"]
+   or [data-testid="...CollapsedControl"] rules here anymore: those
+   selectors vary between Streamlit versions and touching them is what
+   accidentally hid the sidebar reopen button before. Leave the
+   header/toolbar completely native so the reopen control is
+   guaranteed to work, full stop. */
+#MainMenu,
+footer {
+    visibility: hidden;
+}
+
+.stDeployButton {
+    display: none;
+}
+
+.stApp {
+    background-color: var(--sb-black);
+    color: var(--sb-text);
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--sb-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--sb-border);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--sb-teal-dark);
+}
+
+/* Main layout */
+
+.main .block-container {
+    max-width: 1500px;
+    padding-top: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 3rem;
+}
+
+/* Page Header */
+
+.page-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--sb-border);
+    padding-bottom: 1rem;
+    position: relative;
+}
+
+.page-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 56px;
+    height: 2px;
+    background: var(--sb-accent-gradient);
+}
+
+.page-header h1 {
+    color: var(--sb-text);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    font-family: var(--font-heading);
+}
+
+.page-header p {
+    color: var(--sb-muted);
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    font-family: var(--font-body);
+}
+
+/* Links */
+
+a {
+    color: var(--sb-teal-light);
+}
+
+a:hover {
+    color: var(--sb-blue-light);
+}
+
+/* Generic focus ring */
+
+*:focus-visible {
+    outline: 2px solid var(--sb-teal) !important;
+    outline-offset: 2px;
+}

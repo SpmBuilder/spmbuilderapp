@@ -1,0 +1,119 @@
+/* Inputs */
+
+.stTextInput input,
+.stTextArea textarea,
+.stNumberInput input,
+.stSelectbox [data-baseweb="select"] > div {
+    background: var(--sb-surface) !important;
+    border: 1px solid var(--sb-border) !important;
+    color: var(--sb-text) !important;
+    border-radius: 10px !important;
+    font-family: var(--font-body) !important;
+}
+
+.stTextInput input:focus,
+.stTextArea textarea:focus {
+    border-color: var(--sb-teal) !important;
+    box-shadow: 0 0 0 3px var(--sb-teal-tint) !important;
+}
+
+/* Buttons */
+
+.stButton button {
+    border-radius: 10px !important;
+    font-family: var(--font-body) !important;
+}
+
+button[data-testid="baseButton-primary"] {
+    background: var(--sb-teal) !important;
+    color: var(--sb-black) !important;
+    border: none !important;
+    font-weight: 600 !important;
+}
+
+button[data-testid="baseButton-primary"]:hover {
+    background: var(--sb-teal-light) !important;
+}
+
+button[data-testid="baseButton-secondary"] {
+    background: transparent !important;
+    color: var(--sb-text) !important;
+    border: 1px solid var(--sb-border) !important;
+}
+
+button[data-testid="baseButton-secondary"]:hover {
+    border-color: var(--sb-blue) !important;
+    color: var(--sb-blue-light) !important;
+}
+
+/* Tabs */
+
+.stTabs [data-baseweb="tab"] {
+    color: var(--sb-muted) !important;
+    font-weight: 500 !important;
+    font-family: var(--font-body) !important;
+}
+
+.stTabs [aria-selected="true"] {
+    color: var(--sb-teal) !important;
+    border-bottom: 2px solid var(--sb-teal) !important;
+}
+
+/* Expander */
+
+.streamlit-expanderHeader {
+    background: var(--sb-surface) !important;
+    border: 1px solid var(--sb-border) !important;
+    border-radius: 10px !important;
+    color: var(--sb-text) !important;
+}
+
+.streamlit-expanderHeader:hover {
+    border-color: var(--sb-blue) !important;
+}
+
+/* File uploader */
+
+[data-testid="stFileUploader"] {
+    background: var(--sb-surface) !important;
+    border: 1px dashed var(--sb-border) !important;
+    border-radius: 12px !important;
+    transition: border-color 0.15s ease;
+}
+
+[data-testid="stFileUploader"]:hover {
+    border-color: var(--sb-teal) !important;
+}
+
+/* Progress bar */
+
+.stProgress > div > div {
+    background: var(--sb-accent-gradient) !important;
+}
+
+/* Badges */
+
+.badge {
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    letter-spacing: 0.02em;
+}
+
+.badge-neutral {
+    background: var(--sb-surface-2);
+    color: var(--sb-muted);
+}
+
+.badge-active {
+    background: var(--sb-teal);
+    color: var(--sb-black);
+}
+
+.badge-inactive {
+    background: var(--sb-surface);
+    color: var(--sb-muted);
+    border: 1px solid var(--sb-border);
+}
