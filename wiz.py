@@ -90,22 +90,62 @@ def _f_len(x):
     return pd.Series([len(str(v)) for v in x]) if hasattr(x, "__iter__") else len(str(x))
 
 
+# A deliberately small, safe subset of numpy/pandas helpers exposed to formulas.
+# We do NOT expose the full `pd`/`np` modules any more: doing so via bare eval()
+# gives a formula access to things like pd.read_csv/pd.read_pickle or numpy's
+# internals, which is far more power than "spreadsheet-style formulas" need and
+# is a real sandbox-escape risk since these run arbitrary user-typed text.
+class _SafeNP:
+    nan = np.nan
+    where = staticmethod(np.where)
+    isnan = staticmethod(np.isnan)
+
+
+class _SafePD:
+    isna = staticmethod(pd.isna)
+    notna = staticmethod(pd.notna)
+    Timestamp = pd.Timestamp
+
+
 SAFE_NAMESPACE_FUNCS = {
     "abs": abs,
     "round": round,
+    "min": min,
+    "max": max,
     "upper": _f_upper,
     "lower": _f_lower,
     "len": _f_len,
-    "np": np,
-    "pd": pd,
+    "np": _SafeNP,
+    "pd": _SafePD,
 }
+
+# Formulas are free text typed by whoever is using the tool. Block obvious
+# attempts to escape the small sandbox above (dunder attribute access, direct
+# builtin/module access, etc.) before we ever call eval().
+_FORMULA_BLOCKLIST_PATTERN = re.compile(
+    r"__|\bimport\b|\bexec\b|\beval\b|\bopen\b|\bcompile\b|\bgetattr\b|"
+    r"\bsetattr\b|\bdelattr\b|\bglobals\b|\blocals\b|\bvars\b|\bos\.|\bsys\.|\bsubprocess\b",
+    re.IGNORECASE,
+)
+
+
+def _assert_formula_is_safe(formula):
+    if _FORMULA_BLOCKLIST_PATTERN.search(formula):
+        raise Exception(
+            "This formula contains characters/keywords that aren't allowed "
+            "(e.g. '__', 'import', 'os.', 'exec'). Please use plain column "
+            "references, arithmetic, and the supported functions only."
+        )
 
 
 def _replace_columns(expr, df):
-    """Replace [Column Name] with df['Column Name']."""
+    """Replace [Column Name] with df['Column Name'], safely escaping any quote
+    or backslash characters that might appear in the actual column name so we
+    never generate invalid (or maliciously breakable) Python source."""
     def repl(match):
         col_name = match.group(1)
-        return f"df['{col_name}']"
+        escaped = col_name.replace("\\", "\\\\").replace("'", "\\'")
+        return f"df['{escaped}']"
     return re.sub(r"\[([^\]]+)\]", repl, expr)
 
 
@@ -180,16 +220,47 @@ def try_convert_datetime_column(series):
     return None
 
 
+def dedupe_column_names(columns):
+    """Ensure column names are unique and non-blank. Excel/CSV files can easily
+    contain duplicate or empty headers (merged cells, copy-paste errors), and
+    duplicate column labels silently break almost every operation downstream
+    (df['X'] returns a DataFrame instead of a Series, .map()/.astype() throw
+    confusing errors, etc.) - so we fix this once, right at load time."""
+    seen = {}
+    result = []
+    for i, col in enumerate(columns):
+        name = str(col).strip()
+        if name == "" or name.lower() == "nan":
+            name = f"Column_{i+1}"
+        if name in seen:
+            seen[name] += 1
+            new_name = f"{name}_{seen[name]}"
+            while new_name in seen:
+                seen[name] += 1
+                new_name = f"{name}_{seen[name]}"
+            seen[new_name] = 0
+            result.append(new_name)
+        else:
+            seen[name] = 0
+            result.append(name)
+    return result
+
+
 def get_unique_values_sorted(df, column, max_values=1000):
     """Get unique values from a column, sorted, with limit for performance."""
     try:
-        values = df[column].dropna().unique()
+        values = list(df[column].dropna().unique())
+        try:
+            values = sorted(values)
+        except TypeError:
+            # Mixed types (e.g. numbers and text both present in an "object"
+            # column) can't be compared directly - fall back to sorting by
+            # string representation rather than silently showing no options.
+            values = sorted(values, key=lambda v: str(v))
         if len(values) > max_values:
-            # For large datasets, show a sample
-            values = sorted(values)[:max_values]
-            return values, True
-        return sorted(values), False
-    except:
+            return values[:max_values], True
+        return values, False
+    except Exception:
         return [], False
 
 
@@ -204,7 +275,7 @@ class MultiSheetProcessor:
 
             for sheet_name in excel_file.sheet_names:
                 df = pd.read_excel(uploaded_file, sheet_name=sheet_name)
-                df.columns = [str(c).strip() for c in df.columns]
+                df.columns = dedupe_column_names(df.columns)
 
                 # Automatically detect genuinely date-like columns (strict check,
                 # see try_convert_datetime_column - avoids false positives on
@@ -230,7 +301,7 @@ class MultiSheetProcessor:
 
             if ext == ".csv":
                 df = pd.read_csv(uploaded_file)
-                df.columns = [str(c).strip() for c in df.columns]
+                df.columns = dedupe_column_names(df.columns)
 
                 for col in df.columns:
                     converted = try_convert_datetime_column(df[col])
@@ -411,14 +482,18 @@ class MultiSheetProcessor:
           looks up values from any other loaded data source, like Excel's XLOOKUP.
         """
         try:
+            _assert_formula_is_safe(formula)
+
             namespace = dict(SAFE_NAMESPACE_FUNCS)
             namespace["df"] = df
             namespace["XLOOKUP"] = lambda lookup_value, ref_name, lookup_col, return_col, if_not_found=None: \
                 _xlookup(lookup_value, ref_name, lookup_col, return_col, if_not_found, sources=all_sources)
             namespace["VLOOKUP"] = namespace["XLOOKUP"]  # familiar alias, same behavior
 
+            # \b word boundaries stop "END" from matching inside an unrelated
+            # word (e.g. a column named "Blended" or a string ending in "...end").
             if_match = re.search(
-                r'IF\s+(.+?)\s+THEN\s+(.+?)\s+ELSE\s+(.+?)\s+END',
+                r'\bIF\b\s+(.+?)\s+\bTHEN\b\s+(.+?)\s+\bELSE\b\s+(.+?)\s+\bEND\b',
                 formula, re.IGNORECASE | re.DOTALL
             )
             if if_match:
@@ -439,6 +514,11 @@ class MultiSheetProcessor:
             result = eval(expr, {"__builtins__": {}}, namespace)
             return result
         except Exception as e:
+            missing = [m for m in re.findall(r"\[([^\]]+)\]", formula) if m not in df.columns]
+            if missing:
+                raise Exception(
+                    f"Error evaluating formula: column(s) not found in the current data: {missing}"
+                )
             raise Exception(f"Error evaluating formula: {e}")
 
     @staticmethod
@@ -781,6 +861,21 @@ def undo_last_operation():
     if st.session_state.operations_undo_stack:
         st.session_state.operations = st.session_state.operations_undo_stack.pop()
         recompute_active_source()
+        clear_step_editing_state()
+
+
+def clear_step_editing_state():
+    """Clear all 'editing_step_N' flags (and their form widget state).
+
+    Step positions shift whenever a step is reordered, deleted, or replaced
+    by undo - so an 'editing_step_2 = True' flag left over from before such a
+    change would silently reopen the editor for a completely different step
+    after the rerun. Safest fix is to close all open editors on any structural
+    change to the operations list.
+    """
+    for key in list(st.session_state.keys()):
+        if key.startswith("editing_step_"):
+            st.session_state[key] = False
 
 
 def describe_operation(op):
@@ -957,18 +1052,130 @@ def render_operation_edit_form(op, idx, baseline_df, all_sources):
     return new_op
 
 
+_EXCEL_INVALID_SHEET_CHARS = re.compile(r"[\[\]:*?/\\]")
+
+
+def _safe_excel_sheet_name(name, used_names):
+    """Excel sheet names: max 31 chars, can't contain [ ] : * ? / \\, can't be
+    blank, and must be unique within the workbook. Two sources whose names only
+    differ after character 31 (or only in a forbidden character) would
+    otherwise collide and crash openpyxl - so we sanitize and then
+    disambiguate with a numeric suffix if needed."""
+    clean = _EXCEL_INVALID_SHEET_CHARS.sub("_", str(name)).strip() or "Sheet"
+    base = clean[:31]
+    candidate = base
+    n = 1
+    while candidate in used_names:
+        suffix = f"_{n}"
+        candidate = base[: 31 - len(suffix)] + suffix
+        n += 1
+    used_names.add(candidate)
+    return candidate
+
+
 def to_excel_bytes(dfs_by_name):
     output = io.BytesIO()
+    used_names = set()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         for name, data in dfs_by_name.items():
-            data.to_excel(writer, index=False, sheet_name=name[:31])
+            sheet_name = _safe_excel_sheet_name(name, used_names)
+            data.to_excel(writer, index=False, sheet_name=sheet_name)
     return output.getvalue()
 
 
 # ========================= MAIN APP =========================
 
 st.markdown('<h1 class="main-header">📚 Multi-Sheet Data Processing Wizard</h1>', unsafe_allow_html=True)
-st.markdown("### Build your process once, save it, and reuse it on every new report")
+
+_title_col, _manual_col = st.columns([5, 1])
+with _title_col:
+    st.markdown("### Build your process once, save it, and reuse it on every new report")
+with _manual_col:
+    if st.button("📖 Manual", use_container_width=True, key="open_manual_btn"):
+        st.session_state["show_manual"] = not st.session_state.get("show_manual", False)
+
+if st.session_state.get("show_manual", False):
+    with st.expander("📖 User Manual — click to collapse", expanded=True):
+        st.markdown(
+            """
+### 1. Load your data
+- Use **📁 Data Sources** in the sidebar to upload one or more CSV/Excel files, then click **🔄 Load All Files**.
+- Every sheet in every uploaded file becomes its own **data source**, named `filename_sheetname`
+  (or just `filename` if the workbook has one sheet). Sources from different files and sources
+  from the same workbook are treated identically — any source can reference/look up/merge/filter
+  against any other loaded source.
+- Loading a file with a name that's already loaded **replaces** that source — you'll get a warning
+  when this happens.
+- Click a source's name in the sidebar to make it **active**; a ❌ next to each source removes it.
+
+### 2. Building a recipe (the step-by-step process)
+- With a source active, use **⚡ Data Operations** to Filter, add a Calculated Column, Group By,
+  Sort, Rename/Drop a column, Append rows, build a Pivot Table, or Summarize by a reference source.
+- Each action you apply is recorded as a **step** in the **📝 Recipe** panel in the sidebar. Steps
+  replay in order from the original uploaded data every time — so you can safely reorder (⬆️/⬇️),
+  edit (✏️), or delete (🗑️) any step, and everything downstream recomputes automatically.
+- **Undo** reverts the last change to your step list.
+- Switching to a different active source starts a **new, separate** recipe for that source.
+
+### 3. Filtering
+- **🔍 Filter Rows** — one condition (column, operator, value). Value pickers adapt to the column's
+  type (dropdown for text, date-picker for dates, number input for numbers).
+- **🔍 Multiple Filters** — combine several conditions with **AND** (row must match all) or **OR**
+  (row must match at least one). Use OR when comparing the same column against multiple possible
+  values, e.g. `Status == Pending OR Status == In Review`.
+- **🎯 Filter by Reference** — keep/remove rows whose value in a column is (or isn't) found in
+  another loaded source's column — like an Excel lookup-based filter.
+
+### 4. Formulas (Calculated Columns & Template formulas)
+Reference columns with square brackets, e.g. `[Sales] * 0.1`. Supported:
+- Arithmetic and string concatenation: `[Price] - [Cost]`, `[First] + ' ' + [Last]`
+- Functions: `abs(...)`, `round(...)`, `upper(...)`, `lower(...)`, `len(...)`
+- Conditionals: `IF [Sales] > 1000 THEN 'High' ELSE 'Low' END`
+- Cross-source lookups: `XLOOKUP([Product ID], 'Products', 'ID', 'Unit Price')` — looks up a value
+  from *any other loaded source* by matching key columns, with an optional 5th "default if not
+  found" argument. `VLOOKUP(...)` is an identical alias.
+- For safety, formulas may **not** contain double underscores, `import`, `exec`, `eval`, `open`,
+  `os.`, `sys.`, or similar — these are blocked so a formula field can never be used to run
+  arbitrary code.
+
+### 5. Cross-source tools
+- **🔍 VLOOKUP from Reference** — pull one column from another source into the current one.
+- **🔗 Relationships** (sidebar) — join two full sources together (like an Excel VLOOKUP merge),
+  creating a new combined source. To include a join in a saved recipe, make the joined result your
+  active source and keep building from there.
+- **📥 Append Data** / **📊 Summarize by Ref** — stack rows from another source, or aggregate your
+  data and attach reference columns from another source.
+
+### 6. Build Output From Template
+Define the exact column headers your final report needs (typed in, copied from another loaded
+source, or read from an uploaded file's header row), then choose per-column how to fill it:
+**Direct copy**, **Lookup (XLOOKUP-style)** from a reference source, a **Formula**, or a **Static
+value** for every row. Click **Build Output From Template** to generate the matching table.
+
+### 7. Save & reuse a recipe (Automation)
+- Once you've built a recipe, click **💾 Download Recipe (.json)** in the sidebar to save it.
+- Later, in **🤖 Automation**, upload that recipe file plus new data. Map each source the recipe
+  needs to whichever of your currently loaded sources should stand in for it, then **▶️ Run
+  Automation** — every step replays automatically on the new data.
+- **📦 Batch Automation** does the same thing across *many* files at once — one output per file.
+  Only the *first sheet* of each uploaded file is used as that file's primary data; if a file has
+  extra sheets, you'll see a warning listing what was skipped.
+
+### 8. Exporting
+- **📥 Export** on the active source: download as CSV, as a single-sheet Excel file, or export
+  *all* currently loaded sources together as one multi-sheet workbook.
+- Batch Automation results can be downloaded together as one workbook, or loaded back in as new
+  data sources for further processing.
+
+### Tips & things to watch for
+- A step that filters/joins down to **0 rows** triggers an on-screen warning immediately, so you
+  can catch a bad filter value or wrong join column right away instead of finding an empty file
+  later.
+- **🔄 Reset All** clears every loaded source, recipe, and saved template — use it to start clean.
+- Column names in every loaded file are automatically de-duplicated and blank headers are renamed,
+  so files with merged cells or repeated headers won't silently break lookups.
+            """
+        )
 
 # ---------------------------------------------------------------------------
 # Sidebar - Data Source Management
@@ -986,21 +1193,39 @@ with st.sidebar:
 
     if uploaded_files:
         if st.button("🔄 Load All Files", use_container_width=True, key="load_all_files_btn"):
+            newly_loaded, overwritten, failed = 0, [], []
             for file in uploaded_files:
                 file_name = Path(file.name).stem
                 sheets = MultiSheetProcessor.load_single_sheet(file)
-                if sheets:
-                    for sheet_name, df in sheets.items():
-                        source_name = f"{file_name}_{sheet_name}" if len(sheets) > 1 else file_name
-                        st.session_state.data_sources[source_name] = df
-                        st.session_state.source_snapshots[source_name] = df.copy()
-                        st.session_state.source_metadata[source_name] = {
-                            'file': file.name,
-                            'sheet': sheet_name,
-                            'rows': len(df),
-                            'columns': len(df.columns)
-                        }
-            st.success(f"✅ Loaded {len(st.session_state.data_sources)} data sources")
+                if not sheets:
+                    failed.append(file.name)
+                    continue
+                for sheet_name, df in sheets.items():
+                    source_name = f"{file_name}_{sheet_name}" if len(sheets) > 1 else file_name
+                    # Loading a file with the same name twice would otherwise
+                    # silently replace the existing source - including any
+                    # recipe steps/reference lookups built on top of it -
+                    # without any indication that happened.
+                    if source_name in st.session_state.data_sources:
+                        overwritten.append(source_name)
+                        if st.session_state.active_source == source_name:
+                            st.session_state.operations = []
+                            st.session_state.operations_undo_stack = []
+                    st.session_state.data_sources[source_name] = df
+                    st.session_state.source_snapshots[source_name] = df.copy()
+                    st.session_state.source_metadata[source_name] = {
+                        'file': file.name,
+                        'sheet': sheet_name,
+                        'rows': len(df),
+                        'columns': len(df.columns)
+                    }
+                    newly_loaded += 1
+            if newly_loaded:
+                st.success(f"✅ Loaded {newly_loaded} sheet(s). Total sources: {len(st.session_state.data_sources)}")
+            if overwritten:
+                st.warning(f"⚠️ Replaced existing source(s) with new data: {', '.join(overwritten)}")
+            if failed:
+                st.error(f"⚠️ Could not read: {', '.join(failed)}")
             st.rerun()
 
     if st.session_state.data_sources:
@@ -1018,6 +1243,7 @@ with st.sidebar:
                         st.session_state.operations = []
                         st.session_state.operations_undo_stack = []
                         st.session_state.filter_conditions = []
+                        clear_step_editing_state()
                     st.session_state.active_source = source_name
                     st.session_state.current_operation = None
                     if source_name not in st.session_state.source_snapshots:
@@ -1104,12 +1330,14 @@ with st.sidebar:
                     push_undo_snapshot()
                     ops[i-1], ops[i] = ops[i], ops[i-1]
                     recompute_active_source()
+                    clear_step_editing_state()
                     st.rerun()
             with s3:
                 if st.button("⬇️", key=f"down_{i}", disabled=(i == len(ops) - 1), help="Move step down"):
                     push_undo_snapshot()
                     ops[i+1], ops[i] = ops[i], ops[i+1]
                     recompute_active_source()
+                    clear_step_editing_state()
                     st.rerun()
             with s4:
                 if st.button("✏️", key=f"edit_toggle_{i}", help="Edit this step"):
@@ -1120,6 +1348,7 @@ with st.sidebar:
                     push_undo_snapshot()
                     ops.pop(i)
                     recompute_active_source()
+                    clear_step_editing_state()
                     st.rerun()
 
             if st.session_state.get(f"editing_step_{i}", False):
@@ -1150,6 +1379,7 @@ with st.sidebar:
 
         if st.button("🔄 Reset All", use_container_width=True, key="reset_all_btn"):
             st.session_state.data_sources = {}
+            st.session_state.source_metadata = {}
             st.session_state.operations = []
             st.session_state.active_source = None
             st.session_state.relationships = []
@@ -1160,6 +1390,12 @@ with st.sidebar:
             st.session_state.operations_undo_stack = []
             st.session_state.batch_results = {}
             st.session_state.filter_conditions = []
+            st.session_state.template_headers = []
+            # Clear leftover per-step / per-template-column widget state so
+            # nothing carries over into the next session's UI by accident.
+            for key in list(st.session_state.keys()):
+                if key.startswith("editing_step_") or key.startswith("tpl_"):
+                    del st.session_state[key]
             st.success("✅ Reset complete!")
             st.rerun()
 
@@ -1258,6 +1494,7 @@ with st.sidebar:
             if st.button("▶️ Run Batch", use_container_width=True, key="run_batch_btn"):
                 results, errors = {}, {}
                 remapped_ops = remap_operations(batch_recipe.get('operations', []), ref_mapping)
+                skipped_sheets = {}
                 for f in batch_files:
                     try:
                         file_stem = Path(f.name).stem
@@ -1265,8 +1502,13 @@ with st.sidebar:
                         if not sheets:
                             errors[f.name] = "Could not read file"
                             continue
-                        # Uses the first sheet as the primary source for each file.
-                        primary_df = list(sheets.values())[0]
+                        # Only the first sheet of each file is used as the
+                        # recipe's primary source. If a file has more sheets,
+                        # make that explicit instead of silently dropping them.
+                        sheet_names = list(sheets.keys())
+                        primary_df = sheets[sheet_names[0]]
+                        if len(sheet_names) > 1:
+                            skipped_sheets[f.name] = sheet_names[1:]
                         result_df = execute_all_operations(primary_df, remapped_ops, st.session_state.data_sources)
                         results[f"{file_stem}_result"] = result_df
                     except Exception as e:
@@ -1275,6 +1517,12 @@ with st.sidebar:
                 st.session_state.batch_results = results
                 if results:
                     st.success(f"✅ Batch complete: {len(results)} of {len(batch_files)} file(s) processed.")
+                if skipped_sheets:
+                    st.warning(
+                        "⚠️ Only the first sheet of each file is used as input. Extra sheet(s) "
+                        "were NOT processed: " +
+                        "; ".join(f"{fname} → {', '.join(names)}" for fname, names in skipped_sheets.items())
+                    )
                 if errors:
                     st.error(f"⚠️ {len(errors)} file(s) failed:")
                     for fname, err in errors.items():
@@ -1347,6 +1595,14 @@ if st.session_state.active_source:
                 'Unique Values': df.nunique().values
             })
             st.dataframe(col_info, use_container_width=True)
+
+    if len(df.columns) == 0:
+        st.error(
+            "⚠️ The active source currently has no columns (an earlier step, like "
+            "Drop Column or Group By, may have removed them all). Undo the last "
+            "change in the Recipe panel, or pick a different data source."
+        )
+        st.stop()
 
     # Reference Operations
     if len(st.session_state.data_sources) > 1:
@@ -1881,6 +2137,9 @@ if st.session_state.active_source:
                     st.warning("Please provide both column name and formula")
 
         elif op_selected == "group":
+            if len(df.columns) < 2:
+                st.warning("Group By needs at least 2 columns (one to group by, one to aggregate).")
+                st.stop()
             col1, col2 = st.columns(2)
             with col1:
                 group_col = st.selectbox("Group by column", df.columns, key="group_by_col")
@@ -1963,6 +2222,9 @@ if st.session_state.active_source:
                     st.rerun()
 
         elif op_selected == "pivot":
+            if len(df.columns) < 3:
+                st.warning("Pivot Table needs at least 3 columns (index, columns, and values).")
+                st.stop()
             col1, col2 = st.columns(2)
             with col1:
                 index = st.selectbox("Index column", df.columns, key="pivot_index")
