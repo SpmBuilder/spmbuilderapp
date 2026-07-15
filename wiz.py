@@ -13,38 +13,328 @@ st.set_page_config(
     page_title="Multi-Sheet Data Processing Wizard",
     page_icon="📚",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # Custom CSS
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+    .stApp {
+        background: radial-gradient(circle at 50% -20%, #1c233a 0%, #0d111d 45%, #06080e 100%) !important;
+        color: #e2e8f0 !important;
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    [data-testid="stSidebar"] {
+        background-color: #0c0f17 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }
+    [data-testid="stSidebar"] * {
+        font-family: 'Outfit', sans-serif !important;
+    }
+
     .main-header {
-        font-size: 2.5rem;
-        color: #1f77b4;
-        text-align: center;
-        margin-bottom: 1rem;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 2.8rem !important;
+        font-weight: 800 !important;
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #9b51e0 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        text-align: center !important;
+        margin-bottom: 0.2rem !important;
+        letter-spacing: -0.5px !important;
+        text-shadow: 0 0 40px rgba(0, 242, 254, 0.15);
     }
-    .reference-box {
-        background-color: #e7f3ff;
-        padding: 15px;
-        border-radius: 8px;
-        border-left: 4px solid #2196F3;
-        margin: 10px 0;
+
+    .main-subheader {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.1rem !important;
+        color: #8a99ad !important;
+        text-align: center !important;
+        margin-bottom: 2rem !important;
+        font-weight: 300 !important;
     }
+
+    .glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-top: 1px solid rgba(0, 242, 254, 0.15) !important;
+        border-left: 1px solid rgba(0, 242, 254, 0.08) !important;
+        border-radius: 12px !important;
+        padding: 24px !important;
+        margin-bottom: 20px !important;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .welcome-box {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.08) 0%, rgba(79, 172, 254, 0.02) 50%, rgba(155, 81, 224, 0.08) 100%) !important;
+        border: 1px solid rgba(0, 242, 254, 0.15) !important;
+        border-top: 1px solid rgba(0, 242, 254, 0.35) !important;
+        border-radius: 16px !important;
+        padding: 35px !important;
+        margin: 20px 0 !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45) !important;
+    }
+
+    .welcome-box h2 {
+        font-family: 'Outfit', sans-serif !important;
+        background: linear-gradient(90deg, #00f2fe, #4facfe) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        font-weight: 700 !important;
+    }
+
+    .welcome-box h4 {
+        color: #00f5a0 !important;
+        margin-top: 20px !important;
+    }
+
+    .welcome-box p {
+        color: #94a3b8 !important;
+        margin: 8px 0 !important;
+    }
+
     .operation-active {
-        border: 2px solid #1f77b4;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 10px 0;
-        background-color: #f8f9fa;
+        background: linear-gradient(135deg, rgba(155, 81, 224, 0.08) 0%, rgba(225, 0, 255, 0.02) 100%) !important;
+        backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(155, 81, 224, 0.3) !important;
+        border-top: 1px solid rgba(225, 0, 255, 0.5) !important;
+        border-radius: 12px !important;
+        padding: 22px !important;
+        margin: 20px 0 !important;
+        box-shadow: 0 0 25px rgba(155, 81, 224, 0.2) !important;
     }
+
+    .operation-active h3 {
+        font-family: 'Outfit', sans-serif !important;
+        color: #e9d5ff !important;
+        font-weight: 600 !important;
+        margin-bottom: 15px !important;
+    }
+
     .automation-box {
-        border: 2px solid #6f42c1;
-        border-radius: 8px;
-        padding: 15px;
-        margin: 10px 0;
-        background-color: #f5f0ff;
+        background: linear-gradient(135deg, rgba(111, 66, 193, 0.06) 0%, rgba(111, 66, 193, 0.01) 100%) !important;
+        border: 1px solid rgba(111, 66, 193, 0.2) !important;
+        border-top: 1px solid rgba(111, 66, 193, 0.4) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        margin: 15px 0 !important;
+    }
+
+    .reference-box {
+        background: linear-gradient(90deg, rgba(0, 242, 254, 0.05) 0%, rgba(0, 242, 254, 0.01) 100%) !important;
+        border-left: 4px solid #00f2fe !important;
+        border-top: 1px solid rgba(0, 242, 254, 0.15) !important;
+        border-bottom: 1px solid rgba(0, 242, 254, 0.15) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.02) !important;
+        padding: 16px !important;
+        border-radius: 0 8px 8px 0 !important;
+        margin: 15px 0 !important;
+    }
+
+    [data-testid="stMetric"] {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.04) !important;
+        border-top: 1px solid rgba(0, 242, 254, 0.15) !important;
+        border-radius: 10px !important;
+        padding: 12px 18px !important;
+        text-align: center !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #8a99ad !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 0.8rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: #00f2fe !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 1.7rem !important;
+    }
+
+    div.stButton > button {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%) !important;
+        color: #cbd5e1 !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 8px !important;
+        padding: 8px 16px !important;
+        font-weight: 500 !important;
+        font-family: 'Inter', sans-serif !important;
+        transition: all 0.25s ease !important;
+        width: 100% !important;
+    }
+
+    div.stButton > button:hover {
+        background: linear-gradient(135deg, rgba(0, 242, 254, 0.1) 0%, rgba(155, 81, 224, 0.1) 100%) !important;
+        border-color: rgba(0, 242, 254, 0.4) !important;
+        color: #ffffff !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 15px rgba(0, 242, 254, 0.15) !important;
+    }
+
+    div.stButton > button[key*="apply_"], 
+    div.stButton > button[key*="run_"], 
+    div.stButton > button[key*="tpl_build_"], 
+    div.stButton > button[key*="load_all_files_btn"],
+    div.stButton > button[key*="download_"] {
+        background: linear-gradient(135deg, #9b51e0 0%, #e100ff 50%, #00f2fe 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(225, 0, 255, 0.25) !important;
+    }
+    div.stButton > button[key*="apply_"]:hover, 
+    div.stButton > button[key*="run_"]:hover, 
+    div.stButton > button[key*="tpl_build_"]:hover, 
+    div.stButton > button[key*="load_all_files_btn"]:hover,
+    div.stButton > button[key*="download_"]:hover {
+        box-shadow: 0 6px 22px rgba(0, 242, 254, 0.4) !important;
+        transform: translateY(-1px) !important;
+        filter: brightness(1.15) !important;
+    }
+
+    [data-testid="stSidebar"] div.stButton > button {
+        background: rgba(255, 255, 255, 0.02) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        text-align: left !important;
+        justify-content: flex-start !important;
+    }
+    [data-testid="stSidebar"] div.stButton > button:hover {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-color: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    [data-testid="stSidebar"] div.stButton > button[key*="activate_"] {
+        border-left: 3px solid transparent !important;
+    }
+    [data-testid="stSidebar"] div.stButton > button[key*="✅"] {
+        background: rgba(0, 242, 254, 0.06) !important;
+        border: 1px solid rgba(0, 242, 254, 0.2) !important;
+        border-left: 3px solid #00f2fe !important;
+        color: #00f2fe !important;
+    }
+
+    [data-testid="stFileUploader"] {
+        background: rgba(255, 255, 255, 0.01) !important;
+        border: 1px dashed rgba(255, 255, 255, 0.1) !important;
+        border-radius: 10px !important;
+        padding: 10px !important;
+    }
+
+    button[data-baseweb="tab"] {
+        color: #8a99ad !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: 0.95rem !important;
+        border-bottom: 2px solid transparent !important;
+    }
+    button[aria-selected="true"] {
+        color: #00f2fe !important;
+        border-bottom-color: #00f2fe !important;
+    }
+
+    hr {
+        border-color: rgba(255, 255, 255, 0.05) !important;
+        margin: 25px 0 !important;
+    }
+
+    .timeline-step {
+        border-left: 2px solid #9b51e0 !important;
+        padding-left: 18px !important;
+        margin-left: 10px !important;
+        margin-bottom: 20px !important;
+        position: relative !important;
+    }
+    .timeline-step::before {
+        content: '●' !important;
+        position: absolute !important;
+        left: -7px !important;
+        top: -1px !important;
+        color: #00f2fe !important;
+        font-size: 14px !important;
+        text-shadow: 0 0 8px rgba(0, 242, 254, 0.8) !important;
+    }
+    .timeline-step-content {
+        background: rgba(255, 255, 255, 0.01) !important;
+        border: 1px solid rgba(255, 255, 255, 0.03) !important;
+        border-radius: 8px !important;
+        padding: 10px 14px !important;
+    }
+
+    .navbar-container {
+        background: rgba(255, 255, 255, 0.01) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 14px !important;
+        padding: 10px !important;
+        margin-bottom: 25px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .manual-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 20px !important;
+        margin: 25px 0 !important;
+    }
+
+    .manual-card {
+        background: rgba(255, 255, 255, 0.02) !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 12px !important;
+        padding: 24px !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+    }
+
+    .manual-card:hover {
+        transform: translateY(-2px) !important;
+        border-color: rgba(0, 242, 254, 0.2) !important;
+        box-shadow: 0 8px 30px rgba(0, 242, 254, 0.1) !important;
+        background: rgba(255, 255, 255, 0.03) !important;
+    }
+
+    .manual-card-header {
+        font-family: 'Outfit', sans-serif !important;
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
+        color: #00f2fe !important;
+        margin-bottom: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .manual-card-header.step {
+        color: #9b51e0 !important;
+    }
+
+    .manual-card-content {
+        font-size: 0.9rem !important;
+        color: #cbd5e1 !important;
+        line-height: 1.6 !important;
+        flex-grow: 1 !important;
+    }
+
+    .manual-badge {
+        background: rgba(155, 81, 224, 0.1) !important;
+        border: 1px solid rgba(155, 81, 224, 0.2) !important;
+        color: #b57cff !important;
+        padding: 2px 8px !important;
+        border-radius: 6px !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -53,6 +343,7 @@ st.markdown("""
 # Session state initialization
 # ---------------------------------------------------------------------------
 defaults = {
+    'current_page': 'Manual',  # Active navbar page (Manual, Workspace, Automation, Batch Automation)
     'data_sources': {},          # {name: df}
     'source_metadata': {},       # {name: {file, sheet, rows, columns}}
     'operations': [],            # recorded steps for the active source
@@ -67,6 +358,7 @@ defaults = {
     'batch_results': {},         # {result_name: df} from the last Batch Automation run
     'filter_conditions': [],     # For multiple filter operations
     'filter_logic': 'AND',       # How multiple filter conditions are combined
+    'show_nav_tip': True,        # Navigation tip notification visibility
 }
 for key, value in defaults.items():
     if key not in st.session_state:
@@ -1086,324 +1378,944 @@ def to_excel_bytes(dfs_by_name):
 # ========================= MAIN APP =========================
 
 st.markdown('<h1 class="main-header">📚 Multi-Sheet Data Processing Wizard</h1>', unsafe_allow_html=True)
+st.markdown('<p class="main-subheader">Build your process once, save it, and reuse it on every new report</p>', unsafe_allow_html=True)
 
-_title_col, _manual_col = st.columns([5, 1])
-with _title_col:
-    st.markdown("### Build your process once, save it, and reuse it on every new report")
-with _manual_col:
-    if st.button("📖 Manual", use_container_width=True, key="open_manual_btn"):
-        st.session_state["show_manual"] = not st.session_state.get("show_manual", False)
+# Interactive User Manual template is now dynamically rendered in page == "Manual" block
 
-if st.session_state.get("show_manual", False):
-    with st.expander("📖 User Manual — click to collapse", expanded=True):
-        st.markdown(
-            """
-### 1. Load your data
-- Use **📁 Data Sources** in the sidebar to upload one or more CSV/Excel files, then click **🔄 Load All Files**.
-- Every sheet in every uploaded file becomes its own **data source**, named `filename_sheetname`
-  (or just `filename` if the workbook has one sheet). Sources from different files and sources
-  from the same workbook are treated identically — any source can reference/look up/merge/filter
-  against any other loaded source.
-- Loading a file with a name that's already loaded **replaces** that source — you'll get a warning
-  when this happens.
-- Click a source's name in the sidebar to make it **active**; a ❌ next to each source removes it.
+# Active navbar style overrides
+current_p = st.session_state.current_page
+active_key = "nav_sources_btn" if current_p == "Workspace" else ("nav_automation_btn" if current_p == "Automation" else ("nav_batch_btn" if current_p == "Batch Automation" else "nav_manual_btn"))
+st.markdown(f"""
+    <style>
+    div.stButton > button[key="{active_key}"] {{
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 50%, #9b51e0 100%) !important;
+        color: #ffffff !important;
+        font-weight: 700 !important;
+        border: none !important;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.4) !important;
+    }}
+    </style>
+""", unsafe_allow_html=True)
 
-### 2. Building a recipe (the step-by-step process)
-- With a source active, use **⚡ Data Operations** to Filter, add a Calculated Column, Group By,
-  Sort, Rename/Drop a column, Append rows, build a Pivot Table, or Summarize by a reference source.
-- Each action you apply is recorded as a **step** in the **📝 Recipe** panel in the sidebar. Steps
-  replay in order from the original uploaded data every time — so you can safely reorder (⬆️/⬇️),
-  edit (✏️), or delete (🗑️) any step, and everything downstream recomputes automatically.
-- **Undo** reverts the last change to your step list.
-- Switching to a different active source starts a **new, separate** recipe for that source.
+# Top Navigation Bar
+st.markdown('<div class="navbar-container">', unsafe_allow_html=True)
+nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([1, 1, 1, 1])
+with nav_col1:
+    if st.button("📁 Data Sources", key="nav_sources_btn", use_container_width=True):
+        st.session_state.current_page = "Workspace"
+        st.rerun()
+with nav_col2:
+    if st.button("🤖 Automation", key="nav_automation_btn", use_container_width=True):
+        st.session_state.current_page = "Automation"
+        st.rerun()
+with nav_col3:
+    if st.button("📦 Batch Automation", key="nav_batch_btn", use_container_width=True):
+        st.session_state.current_page = "Batch Automation"
+        st.rerun()
+with nav_col4:
+    if st.button("📖 User Manual", key="nav_manual_btn", use_container_width=True):
+        st.session_state.current_page = "Manual"
+        st.rerun()
+st.markdown('</div>', unsafe_allow_html=True)
 
-### 3. Filtering
-- **🔍 Filter Rows** — one condition (column, operator, value). Value pickers adapt to the column's
-  type (dropdown for text, date-picker for dates, number input for numbers).
-- **🔍 Multiple Filters** — combine several conditions with **AND** (row must match all) or **OR**
-  (row must match at least one). Use OR when comparing the same column against multiple possible
-  values, e.g. `Status == Pending OR Status == In Review`.
-- **🎯 Filter by Reference** — keep/remove rows whose value in a column is (or isn't) found in
-  another loaded source's column — like an Excel lookup-based filter.
+# Navigation Notification Banner
+st.markdown(
+    '<div style="text-align: center; margin-bottom: 15px; font-size: 0.82rem; color: #64748b; font-family: \'Inter\', sans-serif;">'
+    '💡 <strong>Tip:</strong> Use the top navbar to switch views. Load reference sheets under Data Sources first before running lookups.'
+    '</div>',
+    unsafe_allow_html=True
+)
 
-### 4. Formulas (Calculated Columns & Template formulas)
-Reference columns with square brackets, e.g. `[Sales] * 0.1`. Supported:
-- Arithmetic and string concatenation: `[Price] - [Cost]`, `[First] + ' ' + [Last]`
-- Functions: `abs(...)`, `round(...)`, `upper(...)`, `lower(...)`, `len(...)`
-- Conditionals: `IF [Sales] > 1000 THEN 'High' ELSE 'Low' END`
-- Cross-source lookups: `XLOOKUP([Product ID], 'Products', 'ID', 'Unit Price')` — looks up a value
-  from *any other loaded source* by matching key columns, with an optional 5th "default if not
-  found" argument. `VLOOKUP(...)` is an identical alias.
-- For safety, formulas may **not** contain double underscores, `import`, `exec`, `eval`, `open`,
-  `os.`, `sys.`, or similar — these are blocked so a formula field can never be used to run
-  arbitrary code.
+page = st.session_state.current_page
 
-### 5. Cross-source tools
-- **🔍 VLOOKUP from Reference** — pull one column from another source into the current one.
-- **🔗 Relationships** (sidebar) — join two full sources together (like an Excel VLOOKUP merge),
-  creating a new combined source. To include a join in a saved recipe, make the joined result your
-  active source and keep building from there.
-- **📥 Append Data** / **📊 Summarize by Ref** — stack rows from another source, or aggregate your
-  data and attach reference columns from another source.
+if page == "Workspace":
+    if not st.session_state.data_sources:
+        # Show clean browse/upload glass card, similar to Automation and Batch
+        st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+        st.markdown('<h2 style="font-family: \'Outfit\', sans-serif; color: #00f2fe; margin-top: 0;">📁 Load Data Sources</h2>', unsafe_allow_html=True)
+        st.markdown('<p style="font-size: 1rem; color: #cbd5e1; margin-bottom: 25px;">Upload your CSV or Excel files to begin processing your sheets.</p>', unsafe_allow_html=True)
 
-### 6. Build Output From Template
-Define the exact column headers your final report needs (typed in, copied from another loaded
-source, or read from an uploaded file's header row), then choose per-column how to fill it:
-**Direct copy**, **Lookup (XLOOKUP-style)** from a reference source, a **Formula**, or a **Static
-value** for every row. Click **Build Output From Template** to generate the matching table.
-
-### 7. Save & reuse a recipe (Automation)
-- Once you've built a recipe, click **💾 Download Recipe (.json)** in the sidebar to save it.
-- Later, in **🤖 Automation**, upload that recipe file plus new data. Map each source the recipe
-  needs to whichever of your currently loaded sources should stand in for it, then **▶️ Run
-  Automation** — every step replays automatically on the new data.
-- **📦 Batch Automation** does the same thing across *many* files at once — one output per file.
-  Only the *first sheet* of each uploaded file is used as that file's primary data; if a file has
-  extra sheets, you'll see a warning listing what was skipped.
-
-### 8. Exporting
-- **📥 Export** on the active source: download as CSV, as a single-sheet Excel file, or export
-  *all* currently loaded sources together as one multi-sheet workbook.
-- Batch Automation results can be downloaded together as one workbook, or loaded back in as new
-  data sources for further processing.
-
-### Tips & things to watch for
-- A step that filters/joins down to **0 rows** triggers an on-screen warning immediately, so you
-  can catch a bad filter value or wrong join column right away instead of finding an empty file
-  later.
-- **🔄 Reset All** clears every loaded source, recipe, and saved template — use it to start clean.
-- Column names in every loaded file are automatically de-duplicated and blank headers are renamed,
-  so files with merged cells or repeated headers won't silently break lookups.
-            """
+        uploaded_files = st.file_uploader(
+            "Upload files (CSV or Excel)",
+            type=['csv', 'xlsx', 'xls'],
+            accept_multiple_files=True,
+            help="Upload multiple files at once. Excel files will load all sheets.",
+            key="workspace_empty_uploader"
         )
 
-# ---------------------------------------------------------------------------
-# Sidebar - Data Source Management
-# ---------------------------------------------------------------------------
-with st.sidebar:
-    st.header("📁 Data Sources")
+        if uploaded_files:
+            if st.button("🔄 Load All Files", use_container_width=True, key="load_all_files_btn"):
+                newly_loaded, overwritten, failed = 0, [], []
+                for file in uploaded_files:
+                    file_name = Path(file.name).stem
+                    sheets = MultiSheetProcessor.load_single_sheet(file)
+                    if not sheets:
+                        failed.append(file.name)
+                        continue
+                    for sheet_name, df in sheets.items():
+                        source_name = f"{file_name}_{sheet_name}" if len(sheets) > 1 else file_name
+                        if source_name in st.session_state.data_sources:
+                            overwritten.append(source_name)
+                            if st.session_state.active_source == source_name:
+                                st.session_state.operations = []
+                                st.session_state.operations_undo_stack = []
+                        st.session_state.data_sources[source_name] = df
+                        st.session_state.source_snapshots[source_name] = df.copy()
+                        st.session_state.source_metadata[source_name] = {
+                            'file': file.name,
+                            'sheet': sheet_name,
+                            'rows': len(df),
+                            'columns': len(df.columns)
+                        }
+                        newly_loaded += 1
+                if newly_loaded:
+                    st.success(f"✅ Loaded {newly_loaded} sheet(s). Total sources: {len(st.session_state.data_sources)}")
+                if overwritten:
+                    st.warning(f"⚠️ Replaced existing source(s) with new data: {', '.join(overwritten)}")
+                if failed:
+                    st.error(f"⚠️ Could not read: {', '.join(failed)}")
+                st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    uploaded_files = st.file_uploader(
-        "Upload your files (CSV or Excel)",
-        type=['csv', 'xlsx', 'xls'],
-        accept_multiple_files=True,
-        help="Upload multiple files at once. Excel files will load all sheets.",
-        key="main_uploader"
-    )
+    else:
+        # Split workspace column layout
+        col_left, col_right = st.columns([1.2, 3])
 
-    if uploaded_files:
-        if st.button("🔄 Load All Files", use_container_width=True, key="load_all_files_btn"):
-            newly_loaded, overwritten, failed = 0, [], []
-            for file in uploaded_files:
-                file_name = Path(file.name).stem
-                sheets = MultiSheetProcessor.load_single_sheet(file)
-                if not sheets:
-                    failed.append(file.name)
-                    continue
-                for sheet_name, df in sheets.items():
-                    source_name = f"{file_name}_{sheet_name}" if len(sheets) > 1 else file_name
-                    # Loading a file with the same name twice would otherwise
-                    # silently replace the existing source - including any
-                    # recipe steps/reference lookups built on top of it -
-                    # without any indication that happened.
-                    if source_name in st.session_state.data_sources:
-                        overwritten.append(source_name)
-                        if st.session_state.active_source == source_name:
+        with col_left:
+            st.markdown('<div class="glass-card" style="padding: 15px; margin-bottom: 15px;">', unsafe_allow_html=True)
+            st.markdown('<h3 style="font-family: \'Outfit\', sans-serif; color: #00f2fe; margin: 0 0 10px 0;">📁 Data Sources</h3>', unsafe_allow_html=True)
+            with st.expander("➕ Load More Files", expanded=False):
+                uploaded_files = st.file_uploader(
+                    "Upload more files",
+                    type=['csv', 'xlsx', 'xls'],
+                    accept_multiple_files=True,
+                    key="add_more_uploader"
+                )
+                if uploaded_files:
+                    if st.button("🔄 Load Files", use_container_width=True, key="load_more_files_btn"):
+                        newly_loaded, overwritten, failed = 0, [], []
+                        for file in uploaded_files:
+                            file_name = Path(file.name).stem
+                            sheets = MultiSheetProcessor.load_single_sheet(file)
+                            if not sheets:
+                                failed.append(file.name)
+                                continue
+                            for sheet_name, df in sheets.items():
+                                source_name = f"{file_name}_{sheet_name}" if len(sheets) > 1 else file_name
+                                if source_name in st.session_state.data_sources:
+                                    overwritten.append(source_name)
+                                    if st.session_state.active_source == source_name:
+                                        st.session_state.operations = []
+                                        st.session_state.operations_undo_stack = []
+                                st.session_state.data_sources[source_name] = df
+                                st.session_state.source_snapshots[source_name] = df.copy()
+                                st.session_state.source_metadata[source_name] = {
+                                    'file': file.name,
+                                    'sheet': sheet_name,
+                                    'rows': len(df),
+                                    'columns': len(df.columns)
+                                }
+                                newly_loaded += 1
+                        if newly_loaded:
+                            st.success(f"✅ Loaded {newly_loaded} sheet(s).")
+                        if overwritten:
+                            st.warning(f"⚠️ Replaced existing source(s) with new data: {', '.join(overwritten)}")
+                        if failed:
+                            st.error(f"⚠️ Could not read: {', '.join(failed)}")
+                        st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+
+            # Loaded sources list
+            st.markdown('<div class="glass-card" style="padding: 15px; margin-bottom: 15px;">', unsafe_allow_html=True)
+            st.markdown('<h4 style="margin: 0 0 10px 0; color: #cbd5e1; font-family: \'Outfit\', sans-serif;">📊 Loaded Sources</h4>', unsafe_allow_html=True)
+            for source_name, df in list(st.session_state.data_sources.items()):
+                col_btn, col_del = st.columns([4, 1])
+                with col_btn:
+                    is_active = st.session_state.active_source == source_name
+                    btn_label = f"📊 {source_name}" + (" ✅" if is_active else "")
+                    if st.button(btn_label, key=f"activate_{source_name}", use_container_width=True):
+                        if st.session_state.active_source != source_name:
                             st.session_state.operations = []
                             st.session_state.operations_undo_stack = []
-                    st.session_state.data_sources[source_name] = df
-                    st.session_state.source_snapshots[source_name] = df.copy()
-                    st.session_state.source_metadata[source_name] = {
-                        'file': file.name,
-                        'sheet': sheet_name,
-                        'rows': len(df),
-                        'columns': len(df.columns)
-                    }
-                    newly_loaded += 1
-            if newly_loaded:
-                st.success(f"✅ Loaded {newly_loaded} sheet(s). Total sources: {len(st.session_state.data_sources)}")
-            if overwritten:
-                st.warning(f"⚠️ Replaced existing source(s) with new data: {', '.join(overwritten)}")
-            if failed:
-                st.error(f"⚠️ Could not read: {', '.join(failed)}")
-            st.rerun()
-
-    if st.session_state.data_sources:
-        st.divider()
-        st.header("📊 Loaded Data Sources")
-
-        for source_name, df in list(st.session_state.data_sources.items()):
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                is_active = st.session_state.active_source == source_name
-                btn_label = f"📊 {source_name}" + (" ✅" if is_active else "")
-                if st.button(btn_label, key=f"activate_{source_name}", use_container_width=True):
-                    if st.session_state.active_source != source_name:
-                        # Switching sources starts a fresh recipe for that source.
-                        st.session_state.operations = []
-                        st.session_state.operations_undo_stack = []
-                        st.session_state.filter_conditions = []
-                        clear_step_editing_state()
-                    st.session_state.active_source = source_name
-                    st.session_state.current_operation = None
-                    if source_name not in st.session_state.source_snapshots:
-                        st.session_state.source_snapshots[source_name] = st.session_state.data_sources[source_name].copy()
-                    st.rerun()
-                meta = st.session_state.source_metadata.get(source_name, {})
-                st.caption(f"Rows: {meta.get('rows', 0)} | Cols: {meta.get('columns', 0)}")
-            with col2:
-                if st.button("❌", key=f"remove_{source_name}", help="Remove this source"):
-                    del st.session_state.data_sources[source_name]
-                    st.session_state.source_metadata.pop(source_name, None)
-                    if st.session_state.active_source == source_name:
-                        st.session_state.active_source = None
-                    st.rerun()
-
-        st.info(f"📊 Total: {len(st.session_state.data_sources)} data sources loaded")
-
-    # Relationship Management
-    if len(st.session_state.data_sources) >= 2:
-        st.divider()
-        st.header("🔗 Relationships")
-
-        with st.expander("Define Relationships"):
-            col1, col2 = st.columns(2)
-            with col1:
-                source1 = st.selectbox("Source 1", list(st.session_state.data_sources.keys()), key="rel_source1")
-            with col2:
-                source2 = st.selectbox("Source 2", list(st.session_state.data_sources.keys()), key="rel_source2")
-
-            if source1 != source2:
-                df1 = st.session_state.data_sources[source1]
-                df2 = st.session_state.data_sources[source2]
-                common_cols = [c for c in df1.columns if c in df2.columns]
-
-                if common_cols:
-                    on_col = st.selectbox("Join on column", common_cols, key="rel_on_col")
-                    how = st.selectbox("Join type", ['inner', 'left', 'right', 'outer'], key="rel_how")
-
-                    if st.button("✅ Create Relationship", use_container_width=True, key="create_rel_btn"):
-                        result = MultiSheetProcessor.create_relationship(df1, df2, on_col, how)
-                        if result is not None:
-                            rel_name = f"{source1}_{source2}_joined"
-                            st.session_state.data_sources[rel_name] = result
-                            st.session_state.source_metadata[rel_name] = {
-                                'file': 'Relationship',
-                                'sheet': 'Joined',
-                                'rows': len(result),
-                                'columns': len(result.columns),
-                                'relationship': f'{source1} ↔ {source2} on {on_col}'
-                            }
-                            st.session_state.relationships.append({
-                                'source1': source1, 'source2': source2, 'on': on_col,
-                                'how': how, 'result': rel_name
-                            })
-                            st.success(f"✅ Created relationship: {rel_name}")
-                            st.caption(
-                                "Note: to include this join in a saved recipe, make the joined "
-                                f"source ('{rel_name}') your active source and continue building from there."
-                            )
-                            st.rerun()
-                else:
-                    st.warning("No common columns found between these sources")
-
-    # ---------------------- Recipe (save the process you built) ----------------------
-    if st.session_state.operations:
-        st.divider()
-        st.header("📝 Recipe")
-        st.caption("Reorder, edit, or delete any step. Switching to a different source starts a new recipe.")
-
-        if st.button("↩️ Undo Last Change", use_container_width=True, key="undo_btn",
-                      disabled=(len(st.session_state.operations_undo_stack) == 0)):
-            undo_last_operation()
-            st.rerun()
-
-        ops = st.session_state.operations
-        baseline_df = st.session_state.source_snapshots.get(st.session_state.active_source)
-
-        for i, op in enumerate(ops):
-            s1, s2, s3, s4, s5 = st.columns([5, 1, 1, 1, 1])
-            with s1:
-                st.write(f"**{i+1}.** `{op['type']}` — {describe_operation(op)}")
-            with s2:
-                if st.button("⬆️", key=f"up_{i}", disabled=(i == 0), help="Move step up"):
-                    push_undo_snapshot()
-                    ops[i-1], ops[i] = ops[i], ops[i-1]
-                    recompute_active_source()
-                    clear_step_editing_state()
-                    st.rerun()
-            with s3:
-                if st.button("⬇️", key=f"down_{i}", disabled=(i == len(ops) - 1), help="Move step down"):
-                    push_undo_snapshot()
-                    ops[i+1], ops[i] = ops[i], ops[i+1]
-                    recompute_active_source()
-                    clear_step_editing_state()
-                    st.rerun()
-            with s4:
-                if st.button("✏️", key=f"edit_toggle_{i}", help="Edit this step"):
-                    st.session_state[f"editing_step_{i}"] = not st.session_state.get(f"editing_step_{i}", False)
-                    st.rerun()
-            with s5:
-                if st.button("🗑️", key=f"delete_{i}", help="Delete this step"):
-                    push_undo_snapshot()
-                    ops.pop(i)
-                    recompute_active_source()
-                    clear_step_editing_state()
-                    st.rerun()
-
-            if st.session_state.get(f"editing_step_{i}", False):
-                with st.expander(f"Editing step {i+1}: {op['type']}", expanded=True):
-                    edited_op = render_operation_edit_form(op, i, baseline_df, st.session_state.data_sources)
-                    if st.button("✅ Save Changes", key=f"save_edit_{i}", use_container_width=True):
-                        push_undo_snapshot()
-                        ops[i] = edited_op
-                        recompute_active_source()
-                        st.session_state[f"editing_step_{i}"] = False
-                        st.success(f"Step {i+1} updated")
+                            st.session_state.filter_conditions = []
+                            clear_step_editing_state()
+                        st.session_state.active_source = source_name
+                        st.session_state.current_operation = None
+                        if source_name not in st.session_state.source_snapshots:
+                            st.session_state.source_snapshots[source_name] = st.session_state.data_sources[source_name].copy()
                         st.rerun()
+                    meta = st.session_state.source_metadata.get(source_name, {})
+                    st.caption(f"Rows: {meta.get('rows', 0)} | Cols: {meta.get('columns', 0)}")
+                with col_del:
+                    if st.button("❌", key=f"remove_{source_name}", help="Remove this source"):
+                        del st.session_state.data_sources[source_name]
+                        st.session_state.source_metadata.pop(source_name, None)
+                        if st.session_state.active_source == source_name:
+                            st.session_state.active_source = None
+                        st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        recipe = build_recipe()
-        recipe_json = json.dumps(recipe, indent=2)
+            # Relationships creator
+            if len(st.session_state.data_sources) >= 2:
+                st.markdown('<div class="glass-card" style="padding: 15px; margin-bottom: 15px;">', unsafe_allow_html=True)
+                st.markdown('<h4 style="margin: 0 0 10px 0; color: #cbd5e1; font-family: \'Outfit\', sans-serif;">🔗 Relationships</h4>', unsafe_allow_html=True)
+                with st.expander("Define Relationship"):
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        source1 = st.selectbox("Source 1", list(st.session_state.data_sources.keys()), key="rel_source1")
+                    with col2:
+                        source2 = st.selectbox("Source 2", list(st.session_state.data_sources.keys()), key="rel_source2")
 
-        st.download_button(
-            "💾 Download Recipe (.json)",
-            data=recipe_json,
-            file_name=f"recipe_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-            mime="application/json",
-            use_container_width=True,
-            key="download_recipe_btn"
-        )
+                    if source1 != source2:
+                        df1 = st.session_state.data_sources[source1]
+                        df2 = st.session_state.data_sources[source2]
+                        common_cols = [c for c in df1.columns if c in df2.columns]
 
-        with st.expander("View recipe JSON"):
-            st.code(recipe_json, language='json')
+                        if common_cols:
+                            on_col = st.selectbox("Join on column", common_cols, key="rel_on_col")
+                            how = st.selectbox("Join type", ['inner', 'left', 'right', 'outer'], key="rel_how")
 
-        if st.button("🔄 Reset All", use_container_width=True, key="reset_all_btn"):
-            st.session_state.data_sources = {}
-            st.session_state.source_metadata = {}
-            st.session_state.operations = []
-            st.session_state.active_source = None
-            st.session_state.relationships = []
-            st.session_state.current_operation = None
-            st.session_state.loaded_recipe = None
-            st.session_state.recipe_mapping = {}
-            st.session_state.source_snapshots = {}
-            st.session_state.operations_undo_stack = []
-            st.session_state.batch_results = {}
-            st.session_state.filter_conditions = []
-            st.session_state.template_headers = []
-            # Clear leftover per-step / per-template-column widget state so
-            # nothing carries over into the next session's UI by accident.
-            for key in list(st.session_state.keys()):
-                if key.startswith("editing_step_") or key.startswith("tpl_"):
-                    del st.session_state[key]
-            st.success("✅ Reset complete!")
-            st.rerun()
+                            if st.button("✅ Create Relationship", use_container_width=True, key="create_rel_btn"):
+                                result = MultiSheetProcessor.create_relationship(df1, df2, on_col, how)
+                                if result is not None:
+                                    rel_name = f"{source1}_{source2}_joined"
+                                    st.session_state.data_sources[rel_name] = result
+                                    st.session_state.source_metadata[rel_name] = {
+                                        'file': 'Relationship',
+                                        'sheet': 'Joined',
+                                        'rows': len(result),
+                                        'columns': len(result.columns),
+                                        'relationship': f'{source1} ↔ {source2} on {on_col}'
+                                    }
+                                    st.session_state.relationships.append({
+                                        'source1': source1, 'source2': source2, 'on': on_col,
+                                        'how': how, 'result': rel_name
+                                    })
+                                    st.success(f"✅ Created relationship: {rel_name}")
+                                    st.rerun()
+                        else:
+                            st.warning("No common columns found between these sources")
+                st.markdown('</div>', unsafe_allow_html=True)
 
-    # ---------------------- Automation (replay a saved recipe) ----------------------
-    st.divider()
-    st.header("🤖 Automation")
-    st.caption("Upload a recipe you saved earlier and run it against new data — no rebuilding required.")
+            # Recipe Timeline
+            if st.session_state.operations:
+                st.markdown('<div class="glass-card" style="padding: 15px; margin-bottom: 15px;">', unsafe_allow_html=True)
+                st.markdown('<h4 style="margin: 0 0 10px 0; color: #cbd5e1; font-family: \'Outfit\', sans-serif;">📝 Recipe</h4>', unsafe_allow_html=True)
+                
+                if st.button("↩️ Undo Last Change", use_container_width=True, key="undo_btn",
+                              disabled=(len(st.session_state.operations_undo_stack) == 0)):
+                    undo_last_operation()
+                    st.rerun()
 
+                ops = st.session_state.operations
+                baseline_df = st.session_state.source_snapshots.get(st.session_state.active_source)
+
+                for i, op in enumerate(ops):
+                    s1, s2, s3, s4, s5 = st.columns([5, 1, 1, 1, 1])
+                    with s1:
+                        st.markdown(f"""
+                        <div class="timeline-step">
+                            <div class="timeline-step-content">
+                                <strong>Step {i+1}: {op['type'].upper()}</strong><br/>
+                                <span style="font-size: 0.8rem; color: #cbd5e1;">{describe_operation(op)}</span>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with s2:
+                        if st.button("⬆️", key=f"up_{i}", disabled=(i == 0), help="Move step up"):
+                            push_undo_snapshot()
+                            ops[i-1], ops[i] = ops[i], ops[i-1]
+                            recompute_active_source()
+                            clear_step_editing_state()
+                            st.rerun()
+                    with s3:
+                        if st.button("⬇️", key=f"down_{i}", disabled=(i == len(ops) - 1), help="Move step down"):
+                            push_undo_snapshot()
+                            ops[i+1], ops[i] = ops[i], ops[i+1]
+                            recompute_active_source()
+                            clear_step_editing_state()
+                            st.rerun()
+                    with s4:
+                        if st.button("✏️", key=f"edit_toggle_{i}", help="Edit this step"):
+                            st.session_state[f"editing_step_{i}"] = not st.session_state.get(f"editing_step_{i}", False)
+                            st.rerun()
+                    with s5:
+                        if st.button("🗑️", key=f"delete_{i}", help="Delete this step"):
+                            push_undo_snapshot()
+                            ops.pop(i)
+                            recompute_active_source()
+                            clear_step_editing_state()
+                            st.rerun()
+
+                    if st.session_state.get(f"editing_step_{i}", False):
+                        with st.expander(f"Editing step {i+1}", expanded=True):
+                            edited_op = render_operation_edit_form(op, i, baseline_df, st.session_state.data_sources)
+                            if st.button("✅ Save Changes", key=f"save_edit_{i}", use_container_width=True):
+                                push_undo_snapshot()
+                                ops[i] = edited_op
+                                recompute_active_source()
+                                st.session_state[f"editing_step_{i}"] = False
+                                st.success(f"Step {i+1} updated")
+                                st.rerun()
+
+                recipe = build_recipe()
+                recipe_json = json.dumps(recipe, indent=2)
+
+                st.download_button(
+                    "💾 Download Recipe (.json)",
+                    data=recipe_json,
+                    file_name=f"recipe_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                    mime="application/json",
+                    use_container_width=True,
+                    key="download_recipe_btn"
+                )
+
+                if st.button("🔄 Reset All", use_container_width=True, key="reset_all_btn"):
+                    st.session_state.data_sources = {}
+                    st.session_state.source_metadata = {}
+                    st.session_state.operations = []
+                    st.session_state.active_source = None
+                    st.session_state.relationships = []
+                    st.session_state.current_operation = None
+                    st.session_state.loaded_recipe = None
+                    st.session_state.recipe_mapping = {}
+                    st.session_state.source_snapshots = {}
+                    st.session_state.operations_undo_stack = []
+                    st.session_state.batch_results = {}
+                    st.session_state.filter_conditions = []
+                    st.session_state.template_headers = []
+                    for key in list(st.session_state.keys()):
+                        if key.startswith("editing_step_") or key.startswith("tpl_"):
+                            del st.session_state[key]
+                    st.success("✅ Reset complete!")
+                    st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
+
+        with col_right:
+            if st.session_state.active_source:
+                source_name = st.session_state.active_source
+                df = st.session_state.data_sources[source_name]
+
+                st.divider()
+                meta = st.session_state.source_metadata.get(source_name, {})
+
+                st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+                col1, col2, col3, col4 = st.columns(4)
+                with col1:
+                    st.metric("Active Source", source_name)
+                with col2:
+                    st.metric("Rows", len(df))
+                with col3:
+                    st.metric("Columns", len(df.columns))
+                with col4:
+                    st.metric("Operations", len(st.session_state.operations))
+                st.markdown('</div>', unsafe_allow_html=True)
+
+                with st.expander("🔍 Data Preview", expanded=False):
+                    tab1, tab2, tab3 = st.tabs(["📊 Data", "📈 Statistics", "📋 Column Info"])
+                    with tab1:
+                        st.dataframe(df.head(100), use_container_width=True)
+                    with tab2:
+                        numeric_cols = df.select_dtypes(include=['number']).columns
+                        if len(numeric_cols) > 0:
+                            st.dataframe(df[numeric_cols].describe(), use_container_width=True)
+                        else:
+                            st.info("No numeric columns for statistics")
+                    with tab3:
+                        col_info = pd.DataFrame({
+                            'Column': df.columns,
+                            'Type': df.dtypes.astype(str),
+                            'Null Count': df.isnull().sum().values,
+                            'Unique Values': df.nunique().values
+                        })
+                        st.dataframe(col_info, use_container_width=True)
+
+                if len(df.columns) == 0:
+                    st.error(
+                        "⚠️ The active source currently has no columns (an earlier step, like "
+                        "Drop Column or Group By, may have removed them all). Undo the last "
+                        "change in the Recipe panel, or pick a different data source."
+                    )
+                    st.stop()
+
+                # Reference Operations
+                if len(st.session_state.data_sources) > 1:
+                    st.divider()
+                    st.header("🔗 Reference Operations")
+                    st.info("Use data from other sheets to enhance your current data")
+
+                    ref_col1, ref_col2 = st.columns(2)
+
+                    with ref_col1:
+                        with st.expander("🔍 VLOOKUP from Reference"):
+                            ref_source = st.selectbox(
+                                "Reference source",
+                                [s for s in st.session_state.data_sources.keys() if s != source_name],
+                                key="vlookup_source"
+                            )
+                            if ref_source:
+                                ref_df = st.session_state.data_sources[ref_source]
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    lookup_col = st.selectbox("Lookup column in current data", df.columns, key="vlookup_col")
+                                with col2:
+                                    lookup_on = st.selectbox("Lookup column in reference", ref_df.columns, key="vlookup_on")
+                                return_col = st.selectbox("Column to return from reference", ref_df.columns, key="vlookup_return")
+                                new_col_name = st.text_input("New column name", f"{lookup_col}_from_{ref_source}", key="vlookup_newcol")
+
+                                if st.button("✅ Apply VLOOKUP", use_container_width=True, key="apply_vlookup_btn"):
+                                    result = MultiSheetProcessor.vlookup(df, lookup_col, ref_df, lookup_on, return_col)
+                                    if result is not None:
+                                        push_undo_snapshot()
+                                        st.session_state.operations.append({
+                                            'type': 'vlookup', 'lookup_source': ref_source,
+                                            'lookup_col': lookup_col, 'lookup_on': lookup_on,
+                                            'return_col': return_col, 'new_column': new_col_name
+                                        })
+                                        recompute_active_source()
+                                        st.success(f"✅ Added column: {new_col_name}")
+                                        st.rerun()
+
+                    with ref_col2:
+                        with st.expander("🎯 Filter by Reference"):
+                            ref_source2 = st.selectbox(
+                                "Reference source",
+                                [s for s in st.session_state.data_sources.keys() if s != source_name],
+                                key="filter_ref_source"
+                            )
+                            if ref_source2:
+                                ref_df2 = st.session_state.data_sources[ref_source2]
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    filter_col = st.selectbox("Column to filter", df.columns, key="filter_col")
+                                with col2:
+                                    ref_col = st.selectbox("Reference column", ref_df2.columns, key="filter_ref_col")
+                                filter_op = st.selectbox("Operation", ['in', 'not in'], key="filter_ref_op")
+
+                                if st.button("✅ Apply Filter", use_container_width=True, key="apply_filter_ref_btn"):
+                                    result = MultiSheetProcessor.filter_by_reference(df, filter_col, ref_df2, ref_col, filter_op)
+                                    if len(result) < len(df):
+                                        push_undo_snapshot()
+                                        st.session_state.operations.append({
+                                            'type': 'filter_by_ref', 'ref_source': ref_source2,
+                                            'column': filter_col, 'ref_column': ref_col, 'operation': filter_op
+                                        })
+                                        recompute_active_source()
+                                        st.success(f"✅ Filtered from {len(df)} to {len(result)} rows")
+                                        st.rerun()
+                                    else:
+                                        st.info("No rows filtered")
+
+                # Template Output Builder
+                st.divider()
+                with st.expander("🧩 Build Output From Template", expanded=False):
+                    st.markdown(
+                        "Define the exact headers your output report needs, then tell each "
+                        "column where its data comes from — including looking values up from "
+                        "a reference file, just like `XLOOKUP` in Excel."
+                    )
+
+                    header_source = st.radio(
+                        "Where do the template headers come from?",
+                        ["Type them in", "Use headers from another loaded source", "Upload a template file"],
+                        horizontal=True, key="tpl_header_source"
+                    )
+
+                    if header_source == "Type them in":
+                        headers_text = st.text_input(
+                            "Comma-separated headers", ", ".join(st.session_state.template_headers),
+                            key="tpl_headers_text"
+                        )
+                        if st.button("Set Headers", key="tpl_set_headers_btn"):
+                            st.session_state.template_headers = [h.strip() for h in headers_text.split(",") if h.strip()]
+                            st.rerun()
+
+                    elif header_source == "Use headers from another loaded source":
+                        other_sources = [s for s in st.session_state.data_sources.keys() if s != source_name]
+                        if other_sources:
+                            pick_source = st.selectbox("Copy headers from", other_sources, key="tpl_copy_headers_source")
+                            if st.button("Set Headers", key="tpl_set_headers_from_source_btn"):
+                                st.session_state.template_headers = list(st.session_state.data_sources[pick_source].columns)
+                                st.rerun()
+                        else:
+                            st.info("Load another source first to copy its headers.")
+
+                    else:
+                        tpl_file = st.file_uploader(
+                            "Upload a file — only its header row is used", type=['csv', 'xlsx', 'xls'],
+                            key="tpl_file_uploader"
+                        )
+                        if tpl_file is not None:
+                            try:
+                                if Path(tpl_file.name).suffix.lower() == '.csv':
+                                    header_cols = list(pd.read_csv(tpl_file, nrows=0).columns)
+                                else:
+                                    header_cols = list(pd.read_excel(tpl_file, nrows=0).columns)
+                                if st.button("Set Headers", key="tpl_set_headers_from_file_btn"):
+                                    st.session_state.template_headers = header_cols
+                                    st.rerun()
+                            except Exception as e:
+                                st.error(f"Couldn't read headers from that file: {e}")
+
+                    if st.session_state.template_headers:
+                        st.success(f"Template has {len(st.session_state.template_headers)} column(s): "
+                                   f"{', '.join(st.session_state.template_headers)}")
+                        st.divider()
+                        st.markdown("**Configure each output column:**")
+
+                        other_sources = [s for s in st.session_state.data_sources.keys() if s != source_name]
+                        mode_options = ["Direct copy from current data", "Lookup from reference file (XLOOKUP)", "Formula", "Static value"]
+
+                        for header in st.session_state.template_headers:
+                            with st.expander(f"🔧 {header}"):
+                                mode = st.selectbox(
+                                    "How should this column be filled?", mode_options,
+                                    key=f"tpl_mode_{header}"
+                                )
+
+                                if mode == mode_options[0]:
+                                    st.selectbox("Copy from column", df.columns, key=f"tpl_direct_{header}")
+
+                                elif mode == mode_options[1]:
+                                    if not other_sources:
+                                        st.warning("Load a reference file (another data source) to use a lookup here.")
+                                    else:
+                                        ref_source = st.selectbox("Reference source", other_sources, key=f"tpl_ref_{header}")
+                                        ref_df = st.session_state.data_sources[ref_source]
+                                        col1, col2 = st.columns(2)
+                                        with col1:
+                                            st.selectbox("Match using column (current data)", df.columns, key=f"tpl_key_{header}")
+                                        with col2:
+                                            st.selectbox("Match against column (reference)", ref_df.columns, key=f"tpl_refkey_{header}")
+                                        st.selectbox("Return this column from reference", ref_df.columns, key=f"tpl_return_{header}")
+                                        st.text_input("Default value if not found (optional)", key=f"tpl_default_{header}")
+
+                                elif mode == mode_options[2]:
+                                    st.text_area(
+                                        "Formula (supports [Columns], XLOOKUP('Source','Key','Return'), IF/THEN/ELSE, etc.)",
+                                        "[Column1]", key=f"tpl_formula_{header}"
+                                    )
+
+                                else:
+                                    st.text_input("Static value for every row", key=f"tpl_static_{header}")
+
+                        if st.button("🏗️ Build Output From Template", use_container_width=True, key="tpl_build_btn"):
+                            all_sources = st.session_state.data_sources
+                            column_configs = {}
+                            for header in st.session_state.template_headers:
+                                mode = st.session_state.get(f"tpl_mode_{header}", mode_options[0])
+                                if mode == mode_options[0]:
+                                    column_configs[header] = {
+                                        'mode': 'direct',
+                                        'source_column': st.session_state.get(f"tpl_direct_{header}")
+                                    }
+                                elif mode == mode_options[1]:
+                                    column_configs[header] = {
+                                        'mode': 'lookup',
+                                        'ref_source': st.session_state.get(f"tpl_ref_{header}"),
+                                        'key_column': st.session_state.get(f"tpl_key_{header}"),
+                                        'ref_key_column': st.session_state.get(f"tpl_refkey_{header}"),
+                                        'ref_return_column': st.session_state.get(f"tpl_return_{header}"),
+                                        'default': st.session_state.get(f"tpl_default_{header}") or None
+                                    }
+                                elif mode == mode_options[2]:
+                                    formula_text = st.session_state.get(f"tpl_formula_{header}", "")
+                                    column_configs[header] = {
+                                        'mode': 'formula',
+                                        'formula': formula_text,
+                                        'referenced_sources': detect_referenced_source_names(formula_text, all_sources.keys())
+                                    }
+                                else:
+                                    column_configs[header] = {
+                                        'mode': 'static',
+                                        'value': st.session_state.get(f"tpl_static_{header}", '')
+                                    }
+
+                            result_df = MultiSheetProcessor.build_template_output(
+                                df, st.session_state.template_headers, column_configs, all_sources
+                            )
+                            result_name = f"{source_name}_template_output"
+                            st.session_state.data_sources[result_name] = result_df
+                            st.session_state.source_metadata[result_name] = {
+                                'file': 'Template Output', 'sheet': 'Built',
+                                'rows': len(result_df), 'columns': len(result_df.columns)
+                            }
+                            build_op = {
+                                'type': 'build_template',
+                                'template_headers': list(st.session_state.template_headers),
+                                'column_configs': column_configs
+                            }
+                            st.session_state.source_snapshots[result_name] = df.copy()
+                            st.session_state.operations = [build_op]
+                            st.session_state.operations_undo_stack = []
+                            st.session_state.active_source = result_name
+                            st.success(f"✅ Built output '{result_name}' with {len(result_df)} rows")
+                            st.rerun()
+
+                # Standard Operations Toolbar
+                st.divider()
+                st.header("⚡ Data Operations")
+
+                if st.session_state.current_operation:
+                    col1, col2 = st.columns([6, 1])
+                    with col2:
+                        if st.button("❌ Close", use_container_width=True, key="close_op_btn"):
+                            st.session_state.current_operation = None
+                            st.rerun()
+
+                if not st.session_state.current_operation:
+                    col1, col2, col3, col4 = st.columns(4)
+                    with col1:
+                        if st.button("🔍 Filter Rows", use_container_width=True, key="op_filter_btn"):
+                            st.session_state.current_operation = "filter"; st.rerun()
+                        if st.button("🔍 Multiple Filters", use_container_width=True, key="op_multi_filter_btn"):
+                            st.session_state.current_operation = "filter_multiple"; st.rerun()
+                        if st.button("📐 Add Column", use_container_width=True, key="op_calc_btn"):
+                            st.session_state.current_operation = "calc"; st.rerun()
+                        if st.button("📊 Group By", use_container_width=True, key="op_group_btn"):
+                            st.session_state.current_operation = "group"; st.rerun()
+                    with col2:
+                        if st.button("🔃 Sort Data", use_container_width=True, key="op_sort_btn"):
+                            st.session_state.current_operation = "sort"; st.rerun()
+                        if st.button("✏️ Rename Column", use_container_width=True, key="op_rename_btn"):
+                            st.session_state.current_operation = "rename"; st.rerun()
+                        if st.button("🗑️ Drop Column", use_container_width=True, key="op_drop_btn"):
+                            st.session_state.current_operation = "drop"; st.rerun()
+                    with col3:
+                        if st.button("📥 Append Data", use_container_width=True, key="op_append_btn"):
+                            st.session_state.current_operation = "append"; st.rerun()
+                        if st.button("📈 Pivot Table", use_container_width=True, key="op_pivot_btn"):
+                            st.session_state.current_operation = "pivot"; st.rerun()
+                        if st.button("📊 Summarize by Ref", use_container_width=True, key="op_summarize_btn"):
+                            st.session_state.current_operation = "summarize"; st.rerun()
+                    with col4:
+                        if st.button("💾 Execute All", use_container_width=True, key="op_execute_btn"):
+                            st.session_state.current_operation = "execute"; st.rerun()
+                        if st.button("📥 Export", use_container_width=True, key="op_export_btn"):
+                            st.session_state.current_operation = "export"; st.rerun()
+
+                if st.session_state.current_operation:
+                    st.divider()
+                    st.markdown('<div class="operation-active">', unsafe_allow_html=True)
+                    st.markdown(f"### 🔧 Operation: {st.session_state.current_operation.title()}")
+
+                    op_selected = st.session_state.current_operation
+
+                    if op_selected == "filter":
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            column = st.selectbox("Select column to filter", df.columns, key="filter_column")
+                            dtype = df[column].dtype
+                            st.caption(f"Data type: {dtype}")
+                            unique_count = df[column].nunique()
+                            st.caption(f"Unique values: {unique_count}")
+                            
+                        with col2:
+                            operation = st.selectbox("Operation", ['==', '!=', '>', '<', '>=', '<=', 'contains'], key="filter_operation")
+                            
+                            if dtype == 'object' or pd.api.types.is_string_dtype(dtype):
+                                unique_values, has_more = get_unique_values_sorted(df, column)
+                                if unique_values:
+                                    if has_more:
+                                        st.caption(f"Showing first {len(unique_values)} of {df[column].nunique()} values")
+                                    value = st.selectbox("Select value to filter", options=unique_values, key="filter_value_dropdown")
+                                else:
+                                    value = st.text_input("Enter value to filter", key="filter_value_text")
+                            
+                            elif pd.api.types.is_datetime64_any_dtype(dtype):
+                                st.caption("Date column detected - select a date")
+                                min_date = df[column].min()
+                                max_date = df[column].max()
+                                st.caption(f"Date range: {min_date.date()} to {max_date.date()}")
+                                min_d = min_date.date() if pd.notna(min_date) else None
+                                max_d = max_date.date() if pd.notna(max_date) else None
+                                today = pd.Timestamp.now().date()
+                                if min_d is not None and today < min_d:
+                                    default_d = min_d
+                                elif max_d is not None and today > max_d:
+                                    default_d = max_d
+                                else:
+                                    default_d = today
+                                value = st.date_input("Select date", value=default_d, min_value=min_d, max_value=max_d, key="filter_date_value")
+                                value = value.strftime("%Y-%m-%d")
+                            
+                            elif pd.api.types.is_numeric_dtype(dtype):
+                                min_val = df[column].min()
+                                max_val = df[column].max()
+                                st.caption(f"Range: {min_val} to {max_val}")
+                                
+                                if operation in ['==', '!=']:
+                                    unique_values, has_more = get_unique_values_sorted(df, column)
+                                    if len(unique_values) <= 50:
+                                        if has_more:
+                                            st.caption(f"Showing first {len(unique_values)} of {df[column].nunique()} values")
+                                        value = st.selectbox("Select value", options=unique_values, key="filter_numeric_dropdown")
+                                    else:
+                                        value = st.number_input("Enter value", value=float(min_val) if pd.notna(min_val) else 0.0, key="filter_numeric_input")
+                                else:
+                                    value = st.number_input("Enter value", value=float(min_val) if pd.notna(min_val) else 0.0, key="filter_numeric_input")
+                            else:
+                                value = st.text_input("Enter value to filter", key="filter_value_fallback")
+
+                        if st.button("✅ Apply Filter", use_container_width=True, key="apply_filter_btn"):
+                            if operation == 'contains':
+                                value = str(value)
+                            new_df = MultiSheetProcessor.filter_rows(df, column, operation, value)
+                            if len(new_df) < len(df):
+                                push_undo_snapshot()
+                                st.session_state.operations.append({
+                                    'type': 'filter', 'column': column, 'operation': operation, 'value': str(value)
+                                })
+                                recompute_active_source()
+                                st.success(f"✅ Filtered from {len(df)} to {len(new_df)} rows")
+                                st.rerun()
+                            else:
+                                st.warning("No rows were filtered. Check your filter criteria.")
+
+                    elif op_selected == "filter_multiple":
+                        st.info("Add multiple filter conditions, then choose how they combine.")
+                        st.session_state.filter_logic = st.radio("Combine conditions using", ["AND", "OR"], index=0 if st.session_state.filter_logic == "AND" else 1, horizontal=True, key="multi_filter_logic_radio")
+
+                        col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
+                        with col1:
+                            new_column = st.selectbox("Column", df.columns, key="multi_filter_col")
+                        with col2:
+                            ops_list = ['==', '!=', '>', '<', '>=', '<=', 'contains']
+                            new_operation = st.selectbox("Operation", ops_list, key="multi_filter_op")
+                        with col3:
+                            dtype = df[new_column].dtype
+                            if pd.api.types.is_datetime64_any_dtype(dtype):
+                                min_date = df[new_column].min()
+                                max_date = df[new_column].max()
+                                min_d = min_date.date() if pd.notna(min_date) else None
+                                max_d = max_date.date() if pd.notna(max_date) else None
+                                today = pd.Timestamp.now().date()
+                                if min_d is not None and today < min_d:
+                                    default_d = min_d
+                                elif max_d is not None and today > max_d:
+                                    default_d = max_d
+                                else:
+                                    default_d = today
+                                new_value = st.date_input("Date", value=default_d, min_value=min_d, max_value=max_d, key="multi_filter_date")
+                                new_value = new_value.strftime("%Y-%m-%d")
+                            elif dtype == 'object' or pd.api.types.is_string_dtype(dtype):
+                                unique_values, has_more = get_unique_values_sorted(df, new_column)
+                                if unique_values:
+                                    new_value = st.selectbox("Value", options=unique_values, key="multi_filter_text_dropdown")
+                                else:
+                                    new_value = st.text_input("Value", key="multi_filter_text")
+                            elif pd.api.types.is_numeric_dtype(dtype):
+                                min_val = df[new_column].min()
+                                max_val = df[new_column].max()
+                                unique_values, has_more = get_unique_values_sorted(df, new_column)
+                                if len(unique_values) <= 50:
+                                    new_value = st.selectbox("Value", options=unique_values, key="multi_filter_num_dropdown")
+                                else:
+                                    new_value = st.number_input("Value", value=float(min_val) if pd.notna(min_val) else 0.0, key="multi_filter_num")
+                            else:
+                                new_value = st.text_input("Value", key="multi_filter_fallback")
+                        with col4:
+                            if st.button("➕ Add", key="add_filter_condition"):
+                                if new_column and new_value is not None:
+                                    st.session_state.filter_conditions.append({
+                                        'column': new_column, 'operation': new_operation, 'value': str(new_value)
+                                    })
+                                    st.rerun()
+                        
+                        if st.session_state.filter_conditions:
+                            st.write(f"Current filter conditions (combined with **{st.session_state.filter_logic}**):")
+                            for i, cond in enumerate(st.session_state.filter_conditions):
+                                col1, col2 = st.columns([5, 1])
+                                with col1:
+                                    prefix = "" if i == 0 else f"{st.session_state.filter_logic} "
+                                    st.write(f"{i+1}. {prefix}{cond['column']} {cond['operation']} {cond['value']}")
+                                with col2:
+                                    if st.button("🗑️", key=f"remove_filter_{i}"):
+                                        st.session_state.filter_conditions.pop(i)
+                                        st.rerun()
+                            
+                            if st.button("✅ Apply All Filters", use_container_width=True):
+                                logic = st.session_state.filter_logic
+                                new_df = MultiSheetProcessor.filter_multiple_rows(df, st.session_state.filter_conditions, logic)
+                                push_undo_snapshot()
+                                st.session_state.operations.append({
+                                    'type': 'filter_multiple', 'conditions': st.session_state.filter_conditions.copy(), 'logic': logic
+                                })
+                                st.session_state.filter_conditions = []
+                                recompute_active_source()
+                                st.success(f"✅ Filtered from {len(df)} to {len(new_df)} rows")
+                                st.rerun()
+
+                    elif op_selected == "calc":
+                        new_column = st.text_input("New column name", f"calculated_{len(df.columns)}", key="calc_newcol")
+                        formula = st.text_area("Formula", "[Column1] + [Column2]", key="calc_formula")
+
+                        if st.button("✅ Add Column", use_container_width=True, key="apply_calc_btn"):
+                            if new_column and formula:
+                                all_sources = st.session_state.data_sources
+                                new_df = MultiSheetProcessor.add_calculated_column(df, new_column, formula, all_sources)
+                                if new_column in new_df.columns:
+                                    push_undo_snapshot()
+                                    referenced = detect_referenced_source_names(formula, all_sources.keys())
+                                    st.session_state.operations.append({
+                                        'type': 'calc_column', 'new_column': new_column, 'formula': formula, 'referenced_sources': referenced
+                                    })
+                                    recompute_active_source()
+                                    st.success(f"✅ Added column: {new_column}")
+                                    st.rerun()
+
+                    elif op_selected == "group":
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            group_col = st.selectbox("Group by column", df.columns, key="group_by_col")
+                        with col2:
+                            agg_col = st.selectbox("Column to aggregate", [c for c in df.columns if c != group_col], key="group_agg_col")
+                        agg_func = st.selectbox("Aggregation function", ['sum', 'mean', 'median', 'min', 'max', 'count', 'std'], key="group_agg_func")
+
+                        if st.button("✅ Apply Group By", use_container_width=True, key="apply_group_btn"):
+                            new_df = MultiSheetProcessor.group_by(df, group_col, agg_col, agg_func)
+                            push_undo_snapshot()
+                            st.session_state.operations.append({
+                                'type': 'group_by', 'group_column': group_col, 'aggregate_column': agg_col, 'function': agg_func
+                            })
+                            recompute_active_source()
+                            st.success(f"✅ Grouped data: {len(new_df)} groups")
+                            st.rerun()
+
+                    elif op_selected == "sort":
+                        sort_col = st.selectbox("Sort by column", df.columns, key="sort_col")
+                        ascending = st.radio("Order", ["Ascending", "Descending"], horizontal=True, key="sort_order")
+
+                        if st.button("✅ Apply Sort", use_container_width=True, key="apply_sort_btn"):
+                            push_undo_snapshot()
+                            st.session_state.operations.append({'type': 'sort', 'column': sort_col, 'ascending': ascending == "Ascending"})
+                            recompute_active_source()
+                            st.success(f"✅ Sorted by {sort_col}")
+                            st.rerun()
+
+                    elif op_selected == "rename":
+                        old_name = st.selectbox("Select column to rename", df.columns, key="rename_old")
+                        new_name = st.text_input("New name", f"{old_name}_new", key="rename_new")
+
+                        if st.button("✅ Apply Rename", use_container_width=True, key="apply_rename_btn"):
+                            if new_name and new_name not in df.columns:
+                                push_undo_snapshot()
+                                st.session_state.operations.append({'type': 'rename', 'old_name': old_name, 'new_name': new_name})
+                                recompute_active_source()
+                                st.success(f"✅ Renamed '{old_name}' to '{new_name}'")
+                                st.rerun()
+
+                    elif op_selected == "drop":
+                        col_to_drop = st.selectbox("Select column to drop", df.columns, key="drop_col")
+                        confirmed = st.checkbox(f"Confirm dropping '{col_to_drop}'", key="drop_confirm")
+
+                        if st.button("✅ Apply Drop", use_container_width=True, key="apply_drop_btn", disabled=not confirmed):
+                            push_undo_snapshot()
+                            st.session_state.operations.append({'type': 'drop', 'column': col_to_drop})
+                            recompute_active_source()
+                            st.success(f"✅ Dropped column: {col_to_drop}")
+                            st.rerun()
+
+                    elif op_selected == "append":
+                        append_source = st.selectbox("Source to append", [s for s in st.session_state.data_sources.keys() if s != source_name], key="append_source_select")
+                        if append_source:
+                            append_df = st.session_state.data_sources[append_source]
+                            if st.button("✅ Apply Append", use_container_width=True, key="apply_append_btn"):
+                                new_df = MultiSheetProcessor.append_data(df, append_df)
+                                push_undo_snapshot()
+                                st.session_state.operations.append({'type': 'append', 'append_source': append_source})
+                                recompute_active_source()
+                                st.success(f"✅ Appended {len(append_df)} rows. New total: {len(new_df)}")
+                                st.rerun()
+
+                    elif op_selected == "pivot":
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            index = st.selectbox("Index column", df.columns, key="pivot_index")
+                            columns = st.selectbox("Columns to pivot", [c for c in df.columns if c != index], key="pivot_columns")
+                        with col2:
+                            values = st.selectbox("Values column", [c for c in df.columns if c not in [index, columns]], key="pivot_values")
+                            aggfunc = st.selectbox("Aggregation", ['sum', 'mean', 'count', 'min', 'max'], key="pivot_aggfunc")
+
+                        if st.button("✅ Create Pivot Table", use_container_width=True, key="apply_pivot_btn"):
+                            new_df = MultiSheetProcessor.pivot_table(df, index, columns, values, aggfunc)
+                            push_undo_snapshot()
+                            st.session_state.operations.append({'type': 'pivot', 'index': index, 'columns': columns, 'values': values, 'aggfunc': aggfunc})
+                            recompute_active_source()
+                            st.success(f"✅ Pivot table created: {len(new_df)} rows")
+                            st.rerun()
+
+                    elif op_selected == "summarize":
+                        ref_source = st.selectbox("Reference source", [s for s in st.session_state.data_sources.keys() if s != source_name], key="summarize_ref_source")
+                        if ref_source:
+                            ref_df = st.session_state.data_sources[ref_source]
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                group_col = st.selectbox("Group by column in current data", df.columns, key="summarize_group_col")
+                                ref_col = st.selectbox("Reference column", ref_df.columns, key="summarize_ref_col")
+                            with col2:
+                                agg_col = st.selectbox("Column to aggregate", [c for c in df.columns if c != group_col], key="summarize_agg_col")
+                                agg_func = st.selectbox("Aggregation function", ['sum', 'mean', 'count', 'min', 'max'], key="summarize_agg_func")
+
+                            if st.button("✅ Summarize", use_container_width=True, key="apply_summarize_btn"):
+                                new_df = MultiSheetProcessor.summarize_by_reference(df, group_col, agg_col, ref_df, ref_col, agg_func)
+                                push_undo_snapshot()
+                                st.session_state.operations.append({
+                                    'type': 'summarize_by_ref', 'ref_source': ref_source, 'group_col': group_col, 'agg_col': agg_col, 'ref_col': ref_col, 'agg_func': agg_func
+                                })
+                                recompute_active_source()
+                                st.success(f"✅ Summarized data: {len(new_df)} rows")
+                                st.rerun()
+
+                    elif op_selected == "execute":
+                        if st.session_state.operations:
+                            st.subheader(f"Current recipe on '{source_name}' ({len(st.session_state.operations)} step(s)):")
+                            for i, op in enumerate(st.session_state.operations, 1):
+                                st.write(f"{i}. {describe_operation(op)}")
+                            if st.button("🔄 Recompute From Scratch", use_container_width=True, key="execute_all_btn"):
+                                recompute_active_source()
+                                new_df = st.session_state.data_sources[source_name]
+                                st.success(f"✅ Recomputed! New shape: {new_df.shape}")
+                                st.rerun()
+
+                    elif op_selected == "export":
+                        export_option = st.radio("Export:", ["Current source only", "All sources (multiple sheets)"], horizontal=True, key="export_option")
+                        if export_option == "Current source only":
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                csv = df.to_csv(index=False)
+                                st.download_button("📊 Download CSV", data=csv, file_name=f"{source_name}.csv", mime="text/csv", use_container_width=True, key="download_csv_btn")
+                            with col2:
+                                excel_data = to_excel_bytes({source_name: df})
+                                st.download_button("📊 Download Excel", data=excel_data, file_name=f"{source_name}.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True, key="download_xlsx_btn")
+                        else:
+                            excel_data = to_excel_bytes(st.session_state.data_sources)
+                            st.download_button(
+                                "📊 Download All Sources", data=excel_data, file_name=f"all_sources_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", use_container_width=True, key="download_all_btn"
+                            )
+
+                    st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                # Welcome / Select data source prompt
+                st.markdown(f"""
+                <div class="welcome-box" style="text-align: center;">
+                    <h2>📊 Select a Data Source</h2>
+                    <p style="font-size: 1.1rem; color: #cbd5e1; margin-bottom: 15px;">Choose any source from the left panel to start processing</p>
+                    <span style="background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.2); padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; color: #00f2fe; font-weight: 500;">
+                        {len(st.session_state.data_sources)} active data sources loaded
+                    </span>
+                </div>
+                """, unsafe_allow_html=True)
+                st.subheader("📋 All Loaded Sources")
+                for name, df in st.session_state.data_sources.items():
+                    with st.expander(f"📊 {name} ({len(df)} rows, {len(df.columns)} cols)"):
+                        st.dataframe(df.head(), use_container_width=True)
+
+elif page == "Automation":
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-family: \'Outfit\', sans-serif; color: #00f2fe; margin-top: 0;">🤖 Run Automation Replay</h2>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 1rem; color: #cbd5e1; margin-bottom: 25px;">Upload a recipe JSON you downloaded earlier and execute it instantly against new data worksheets.</p>', unsafe_allow_html=True)
+    
     recipe_file = st.file_uploader("Upload a recipe (.json)", type=['json'], key="recipe_uploader")
     if recipe_file is not None:
         try:
@@ -1416,16 +2328,12 @@ with st.sidebar:
     if st.session_state.loaded_recipe and st.session_state.data_sources:
         recipe = st.session_state.loaded_recipe
         needed_sources = extract_referenced_sources(recipe)
-        st.write(f"This recipe needs **{len(needed_sources)}** source(s) and has "
-                 f"**{len(recipe.get('operations', []))}** step(s).")
+        st.write(f"This recipe needs **{len(needed_sources)}** source(s) and has **{len(recipe.get('operations', []))}** step(s).")
 
         loaded_names = list(st.session_state.data_sources.keys())
         for needed in needed_sources:
             default_index = loaded_names.index(needed) if needed in loaded_names else 0
-            chosen = st.selectbox(
-                f"Map '{needed}' to:", loaded_names,
-                index=default_index, key=f"map_{needed}"
-            )
+            chosen = st.selectbox(f"Map '{needed}' to:", loaded_names, index=default_index, key=f"map_{needed}")
             st.session_state.recipe_mapping[needed] = chosen
 
         if st.button("▶️ Run Automation", use_container_width=True, key="run_automation_btn"):
@@ -1439,29 +2347,30 @@ with st.sidebar:
                 result_df = execute_all_operations(primary_df, remapped_ops, st.session_state.data_sources)
                 result_name = f"{primary_new}_automated_{datetime.now().strftime('%H%M%S')}"
                 st.session_state.data_sources[result_name] = result_df
+                st.session_state.source_snapshots[result_name] = primary_df.copy()
                 st.session_state.source_metadata[result_name] = {
                     'file': 'Automation', 'sheet': 'Result',
                     'rows': len(result_df), 'columns': len(result_df.columns)
                 }
-                st.session_state.source_snapshots[result_name] = primary_df.copy()
                 st.session_state.active_source = result_name
                 st.session_state.operations = list(remapped_ops)
                 st.session_state.operations_undo_stack = []
-                st.success(f"✅ Automation complete! New source: {result_name}")
+                st.success(f"✅ Automation complete! View the output in your Workspace: '{result_name}'")
+                st.session_state.current_page = "Workspace"
                 st.rerun()
     elif st.session_state.loaded_recipe and not st.session_state.data_sources:
-        st.info("Upload the data file(s) this recipe should run on first.")
+        st.warning("⚠️ No data sources loaded. Please load the necessary reference files in the Workspace first.")
+    else:
+        st.info("💡 Load a recipe JSON to begin mapping.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # ---------------------- Batch Automation (one recipe, many files) ----------------------
-    st.divider()
-    st.header("📦 Batch Automation")
-    st.caption("Run a saved recipe against many files in one go — each uploaded file becomes one output.")
-
+elif page == "Batch Automation":
+    st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-family: \'Outfit\', sans-serif; color: #9b51e0; margin-top: 0;">📦 Batch Automation Processor</h2>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size: 1rem; color: #cbd5e1; margin-bottom: 25px;">Apply a saved cleaning recipe on multiple files at once. Each file yields a distinct output sheet.</p>', unsafe_allow_html=True)
+    
     batch_recipe_file = st.file_uploader("Upload a recipe (.json)", type=['json'], key="batch_recipe_uploader")
-    batch_files = st.file_uploader(
-        "Upload files to process — one run of the recipe per file",
-        type=['csv', 'xlsx', 'xls'], accept_multiple_files=True, key="batch_files_uploader"
-    )
+    batch_files = st.file_uploader("Upload files to process — one run of the recipe per file", type=['csv', 'xlsx', 'xls'], accept_multiple_files=True, key="batch_files_uploader")
 
     if batch_recipe_file is not None and batch_files:
         try:
@@ -1475,21 +2384,18 @@ with st.sidebar:
             needed_sources = extract_referenced_sources(batch_recipe)
             other_needed = [s for s in needed_sources if s != primary_name]
 
-            st.write(f"Each uploaded file will be used as **'{primary_name}'**. "
-                     f"This recipe has **{len(batch_recipe.get('operations', []))}** step(s).")
+            st.write(f"Each uploaded file will be used as **'{primary_name}'**. This recipe has **{len(batch_recipe.get('operations', []))}** step(s).")
 
             ref_mapping = {}
             loaded_names = list(st.session_state.data_sources.keys())
             if other_needed:
                 st.caption("This recipe also needs reference source(s) — map them to data you already have loaded:")
                 if not loaded_names:
-                    st.warning("Load the needed reference file(s) first (via the uploader at the top of the sidebar).")
+                    st.warning("Load the needed reference file(s) first in the Workspace.")
                 for needed in other_needed:
                     default_index = loaded_names.index(needed) if needed in loaded_names else 0
                     if loaded_names:
-                        ref_mapping[needed] = st.selectbox(
-                            f"Map '{needed}' to:", loaded_names, index=default_index, key=f"batch_map_{needed}"
-                        )
+                        ref_mapping[needed] = st.selectbox(f"Map '{needed}' to:", loaded_names, index=default_index, key=f"batch_map_{needed}")
 
             if st.button("▶️ Run Batch", use_container_width=True, key="run_batch_btn"):
                 results, errors = {}, {}
@@ -1502,9 +2408,6 @@ with st.sidebar:
                         if not sheets:
                             errors[f.name] = "Could not read file"
                             continue
-                        # Only the first sheet of each file is used as the
-                        # recipe's primary source. If a file has more sheets,
-                        # make that explicit instead of silently dropping them.
                         sheet_names = list(sheets.keys())
                         primary_df = sheets[sheet_names[0]]
                         if len(sheet_names) > 1:
@@ -1518,11 +2421,7 @@ with st.sidebar:
                 if results:
                     st.success(f"✅ Batch complete: {len(results)} of {len(batch_files)} file(s) processed.")
                 if skipped_sheets:
-                    st.warning(
-                        "⚠️ Only the first sheet of each file is used as input. Extra sheet(s) "
-                        "were NOT processed: " +
-                        "; ".join(f"{fname} → {', '.join(names)}" for fname, names in skipped_sheets.items())
-                    )
+                    st.warning("⚠️ Only the first sheet of each file is used as input. Extra sheet(s) were NOT processed.")
                 if errors:
                     st.error(f"⚠️ {len(errors)} file(s) failed:")
                     for fname, err in errors.items():
@@ -1555,817 +2454,415 @@ with st.sidebar:
                 }
             st.success("Loaded batch results into your data sources.")
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
 
+elif page == "Manual":
+    features_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            color: #cbd5e1;
+            overflow: hidden;
+        }
+        .carousel-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(0, 242, 254, 0.20);
+            border-left: 1px solid rgba(0, 242, 254, 0.10);
+            border-radius: 12px;
+            padding: 30px;
+            height: 250px;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+        .slide {
+            display: none;
+            animation: fade 0.6s ease-in-out;
+            width: 100%;
+        }
+        .slide.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .title {
+            font-family: 'Outfit', sans-serif;
+            color: #00f2fe;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+        }
+        .desc {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #8a99ad;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 242, 254, 0.15) 0%, rgba(155, 81, 224, 0.15) 100%);
+            border-color: rgba(0, 242, 254, 0.4);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+        }
+        .prev { left: 15px; }
+        .next { right: 15px; }
+        .dots-container {
+            position: absolute;
+            bottom: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .dot.active {
+            background: #00f2fe;
+            box-shadow: 0 0 8px #00f2fe;
+        }
+    </style>
+    </head>
+    <body>
+    <div class="carousel-card">
+        <div class="slide active">
+            <div class="title">📚 Multi-Sheet Loader</div>
+            <div class="desc">Load multiple Excel sheets and standalone CSV files automatically. Excel sheets are imported as separate files so you can run cross-sheet processes easily.</div>
+        </div>
+        <div class="slide">
+            <div class="title">🔗 Relationships Manager</div>
+            <div class="desc">Connect files dynamically using standard SQL joins (Inner, Left, Right, Outer) on shared key columns to create merged master data sources.</div>
+        </div>
+        <div class="slide">
+            <div class="title">🔄 Cross-Sheet Formula Engine</div>
+            <div class="desc">Apply advanced spreadsheet-style formulas, including native XLOOKUP and VLOOKUP functions, to map and lookup data across loaded sheets.</div>
+        </div>
+        <div class="slide">
+            <div class="title">📊 Visual Recipe Timeline</div>
+            <div class="desc">Record all cleaning and filter operations into a visual sequential recipe. Easily reorder, edit, toggle, or delete steps in real time.</div>
+        </div>
+        <div class="slide">
+            <div class="title">🤖 Parallel Automation</div>
+            <div class="desc">Save your recorded recipe and replay it instantly on brand-new files, eliminating the need to rebuild data cleaning processes.</div>
+        </div>
+        <div class="slide">
+            <div class="title">🧩 Template Builder</div>
+            <div class="desc">Configure exact column header output templates. Map columns via direct copy, lookup, custom formulas, or static values.</div>
+        </div>
 
-# ---------------------------------------------------------------------------
-# Main content area - Active Data Source
-# ---------------------------------------------------------------------------
-if st.session_state.active_source:
-    source_name = st.session_state.active_source
-    df = st.session_state.data_sources[source_name]
+        <div class="nav-btn prev" onclick="moveSlide(-1)">&#10094;</div>
+        <div class="nav-btn next" onclick="moveSlide(1)">&#10095;</div>
 
-    st.divider()
-    meta = st.session_state.source_metadata.get(source_name, {})
+        <div class="dots-container">
+            <div class="dot active" onclick="setSlide(0)"></div>
+            <div class="dot" onclick="setSlide(1)"></div>
+            <div class="dot" onclick="setSlide(2)"></div>
+            <div class="dot" onclick="setSlide(3)"></div>
+            <div class="dot" onclick="setSlide(4)"></div>
+            <div class="dot" onclick="setSlide(5)"></div>
+        </div>
+    </div>
+    <script>
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        let timer = setInterval(autoPlay, 5000);
 
-    col1, col2, col3, col4 = st.columns(4)
+        function updateCarousel() {
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentIdx);
+            });
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentIdx);
+            });
+        }
+
+        function moveSlide(dir) {
+            clearInterval(timer);
+            currentIdx = (currentIdx + dir + slides.length) % slides.length;
+            updateCarousel();
+            timer = setInterval(autoPlay, 5000);
+        }
+
+        function setSlide(idx) {
+            clearInterval(timer);
+            currentIdx = idx;
+            updateCarousel();
+            timer = setInterval(autoPlay, 5000);
+        }
+
+        function autoPlay() {
+            currentIdx = (currentIdx + 1) % slides.length;
+            updateCarousel();
+        }
+    </script>
+    </body>
+    </html>
+    """
+
+    steps_html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            color: #cbd5e1;
+            overflow: hidden;
+        }
+        .carousel-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.005) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(155, 81, 224, 0.20);
+            border-left: 1px solid rgba(155, 81, 224, 0.10);
+            border-radius: 12px;
+            padding: 30px;
+            height: 250px;
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+        .slide {
+            display: none;
+            animation: fade 0.6s ease-in-out;
+            width: 100%;
+        }
+        .slide.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .badge {
+            background: rgba(155, 81, 224, 0.15) !important;
+            border: 1px solid rgba(155, 81, 224, 0.3) !important;
+            color: #d6b3ff !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+        .title {
+            font-family: 'Outfit', sans-serif;
+            color: #9b51e0;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            text-shadow: 0 0 10px rgba(155, 81, 224, 0.2);
+        }
+        .desc {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #8a99ad;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-btn:hover {
+            background: linear-gradient(135deg, rgba(155, 81, 224, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
+            border-color: rgba(155, 81, 224, 0.4);
+            color: #ffffff;
+            box-shadow: 0 0 15px rgba(155, 81, 224, 0.3);
+        }
+        .prev { left: 15px; }
+        .next { right: 15px; }
+        .dots-container {
+            position: absolute;
+            bottom: 15px;
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .dot.active {
+            background: #9b51e0;
+            box-shadow: 0 0 8px #9b51e0;
+        }
+    </style>
+    </head>
+    <body>
+    <div class="carousel-card">
+        <div class="slide active">
+            <div class="badge">Step 1</div>
+            <div class="title">Load Data</div>
+            <div class="desc">Upload your CSV or Excel files in the Data Sources page and click <strong>🔄 Load All Files</strong>. Every sheet will register as a distinct data source.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 2</div>
+            <div class="title">Build Recipe</div>
+            <div class="desc">Select an active sheet and use the <strong>⚡ Data Operations</strong> panel to append filters, sort data, group columns, or rename fields.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 3</div>
+            <div class="title">Filter Rows</div>
+            <div class="desc">Apply single or multi-condition filters using AND/OR logic. Or filter values based on reference columns from other sheets.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 4</div>
+            <div class="title">Add Formulas</div>
+            <div class="desc">Reference columns with square brackets, e.g. <code>[Price] * [Qty]</code>. Support includes <code>IF/THEN/ELSE</code> and custom lookup calls.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 5</div>
+            <div class="title">Join Sheets</div>
+            <div class="desc">Establish relationships between different tables. Create custom VLOOKUPs or merge full tables through the Join manager.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 6</div>
+            <div class="title">Map Outputs</div>
+            <div class="desc">Create output templates matching your reporting requirements, mapping cells from source sheets to target columns.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 7</div>
+            <div class="title">Automate Reports</div>
+            <div class="desc">Download your cleaning recipe as a JSON file, load it under <strong>🤖 Automation</strong>, and run it on new reporting cycles.</div>
+        </div>
+        <div class="slide">
+            <div class="badge">Step 8</div>
+            <div class="title">Export Workbooks</div>
+            <div class="desc">Download your processed worksheets as single-sheet CSV/Excel files, or package all data sources into a multi-tab workbook.</div>
+        </div>
+
+        <div class="nav-btn prev" onclick="moveSlide(-1)">&#10094;</div>
+        <div class="nav-btn next" onclick="moveSlide(1)">&#10095;</div>
+
+        <div class="dots-container">
+            <div class="dot active" onclick="setSlide(0)"></div>
+            <div class="dot" onclick="setSlide(1)"></div>
+            <div class="dot" onclick="setSlide(2)"></div>
+            <div class="dot" onclick="setSlide(3)"></div>
+            <div class="dot" onclick="setSlide(4)"></div>
+            <div class="dot" onclick="setSlide(5)"></div>
+            <div class="dot" onclick="setSlide(6)"></div>
+            <div class="dot" onclick="setSlide(7)"></div>
+        </div>
+    </div>
+    <script>
+        let currentIdx = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        let timer = setInterval(autoPlay, 5000);
+
+        function updateCarousel() {
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle('active', idx === currentIdx);
+            });
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentIdx);
+            });
+        }
+
+        function moveSlide(dir) {
+            clearInterval(timer);
+            currentIdx = (currentIdx + dir + slides.length) % slides.length;
+            updateCarousel();
+            timer = setInterval(autoPlay, 5000);
+        }
+
+        function setSlide(idx) {
+            clearInterval(timer);
+            currentIdx = idx;
+            updateCarousel();
+            timer = setInterval(autoPlay, 5000);
+        }
+
+        function autoPlay() {
+            currentIdx = (currentIdx + 1) % slides.length;
+            updateCarousel();
+        }
+    </script>
+    </body>
+    </html>
+    """
+
+    col1, col2 = st.columns(2)
     with col1:
-        st.metric("Active Source", source_name)
+        st.markdown('<h3 style="font-family: \'Outfit\', sans-serif; color: #00f2fe; text-align: center; margin-top: 10px; margin-bottom: 20px;">✨ Builder Core Features</h3>', unsafe_allow_html=True)
+        st.components.v1.html(features_html, height=270)
     with col2:
-        st.metric("Rows", len(df))
-    with col3:
-        st.metric("Columns", len(df.columns))
-    with col4:
-        st.metric("Operations", len(st.session_state.operations))
-
-    with st.expander("🔍 Data Preview", expanded=False):
-        tab1, tab2, tab3 = st.tabs(["📊 Data", "📈 Statistics", "📋 Column Info"])
-        with tab1:
-            st.dataframe(df.head(100), use_container_width=True)
-        with tab2:
-            numeric_cols = df.select_dtypes(include=['number']).columns
-            if len(numeric_cols) > 0:
-                st.dataframe(df[numeric_cols].describe(), use_container_width=True)
-            else:
-                st.info("No numeric columns for statistics")
-        with tab3:
-            col_info = pd.DataFrame({
-                'Column': df.columns,
-                'Type': df.dtypes.astype(str),
-                'Null Count': df.isnull().sum().values,
-                'Unique Values': df.nunique().values
-            })
-            st.dataframe(col_info, use_container_width=True)
-
-    if len(df.columns) == 0:
-        st.error(
-            "⚠️ The active source currently has no columns (an earlier step, like "
-            "Drop Column or Group By, may have removed them all). Undo the last "
-            "change in the Recipe panel, or pick a different data source."
-        )
-        st.stop()
-
-    # Reference Operations
-    if len(st.session_state.data_sources) > 1:
-        st.divider()
-        st.header("🔗 Reference Operations")
-        st.info("Use data from other sheets to enhance your current data")
-
-        ref_col1, ref_col2 = st.columns(2)
-
-        with ref_col1:
-            with st.expander("🔍 VLOOKUP from Reference"):
-                ref_source = st.selectbox(
-                    "Reference source",
-                    [s for s in st.session_state.data_sources.keys() if s != source_name],
-                    key="vlookup_source"
-                )
-                if ref_source:
-                    ref_df = st.session_state.data_sources[ref_source]
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        lookup_col = st.selectbox("Lookup column in current data", df.columns, key="vlookup_col")
-                    with col2:
-                        lookup_on = st.selectbox("Lookup column in reference", ref_df.columns, key="vlookup_on")
-                    return_col = st.selectbox("Column to return from reference", ref_df.columns, key="vlookup_return")
-                    new_col_name = st.text_input("New column name", f"{lookup_col}_from_{ref_source}", key="vlookup_newcol")
-
-                    if st.button("✅ Apply VLOOKUP", use_container_width=True, key="apply_vlookup_btn"):
-                        result = MultiSheetProcessor.vlookup(df, lookup_col, ref_df, lookup_on, return_col)
-                        if result is not None:
-                            push_undo_snapshot()
-                            st.session_state.operations.append({
-                                'type': 'vlookup', 'lookup_source': ref_source,
-                                'lookup_col': lookup_col, 'lookup_on': lookup_on,
-                                'return_col': return_col, 'new_column': new_col_name
-                            })
-                            recompute_active_source()
-                            st.success(f"✅ Added column: {new_col_name}")
-                            st.rerun()
-
-        with ref_col2:
-            with st.expander("🎯 Filter by Reference"):
-                ref_source2 = st.selectbox(
-                    "Reference source",
-                    [s for s in st.session_state.data_sources.keys() if s != source_name],
-                    key="filter_ref_source"
-                )
-                if ref_source2:
-                    ref_df2 = st.session_state.data_sources[ref_source2]
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        filter_col = st.selectbox("Column to filter", df.columns, key="filter_col")
-                    with col2:
-                        ref_col = st.selectbox("Reference column", ref_df2.columns, key="filter_ref_col")
-                    filter_op = st.selectbox("Operation", ['in', 'not in'], key="filter_ref_op")
-
-                    if st.button("✅ Apply Filter", use_container_width=True, key="apply_filter_ref_btn"):
-                        result = MultiSheetProcessor.filter_by_reference(df, filter_col, ref_df2, ref_col, filter_op)
-                        if len(result) < len(df):
-                            push_undo_snapshot()
-                            st.session_state.operations.append({
-                                'type': 'filter_by_ref', 'ref_source': ref_source2,
-                                'column': filter_col, 'ref_column': ref_col, 'operation': filter_op
-                            })
-                            recompute_active_source()
-                            st.success(f"✅ Filtered from {len(df)} to {len(result)} rows")
-                            st.rerun()
-                        else:
-                            st.info("No rows filtered")
-
-    # ---------------------------------------------------------------------
-    # Template Output Builder — define your output headers, fill each one
-    # via direct copy, an XLOOKUP-style reference lookup, a formula, or a
-    # static value, then generate a table that matches your template exactly.
-    # ---------------------------------------------------------------------
-    st.divider()
-    with st.expander("🧩 Build Output From Template", expanded=False):
-        st.markdown(
-            "Define the exact headers your output report needs, then tell each "
-            "column where its data comes from — including looking values up from "
-            "a reference file, just like `XLOOKUP` in Excel."
-        )
-
-        header_source = st.radio(
-            "Where do the template headers come from?",
-            ["Type them in", "Use headers from another loaded source", "Upload a template file"],
-            horizontal=True, key="tpl_header_source"
-        )
-
-        if header_source == "Type them in":
-            headers_text = st.text_input(
-                "Comma-separated headers", ", ".join(st.session_state.template_headers),
-                key="tpl_headers_text"
-            )
-            if st.button("Set Headers", key="tpl_set_headers_btn"):
-                st.session_state.template_headers = [h.strip() for h in headers_text.split(",") if h.strip()]
-                st.rerun()
-
-        elif header_source == "Use headers from another loaded source":
-            other_sources = [s for s in st.session_state.data_sources.keys() if s != source_name]
-            if other_sources:
-                pick_source = st.selectbox("Copy headers from", other_sources, key="tpl_copy_headers_source")
-                if st.button("Set Headers", key="tpl_set_headers_from_source_btn"):
-                    st.session_state.template_headers = list(st.session_state.data_sources[pick_source].columns)
-                    st.rerun()
-            else:
-                st.info("Load another source first to copy its headers.")
-
-        else:
-            tpl_file = st.file_uploader(
-                "Upload a file — only its header row is used", type=['csv', 'xlsx', 'xls'],
-                key="tpl_file_uploader"
-            )
-            if tpl_file is not None:
-                try:
-                    if Path(tpl_file.name).suffix.lower() == '.csv':
-                        header_cols = list(pd.read_csv(tpl_file, nrows=0).columns)
-                    else:
-                        header_cols = list(pd.read_excel(tpl_file, nrows=0).columns)
-                    if st.button("Set Headers", key="tpl_set_headers_from_file_btn"):
-                        st.session_state.template_headers = header_cols
-                        st.rerun()
-                except Exception as e:
-                    st.error(f"Couldn't read headers from that file: {e}")
-
-        if st.session_state.template_headers:
-            st.success(f"Template has {len(st.session_state.template_headers)} column(s): "
-                       f"{', '.join(st.session_state.template_headers)}")
-            st.divider()
-            st.markdown("**Configure each output column:**")
-
-            other_sources = [s for s in st.session_state.data_sources.keys() if s != source_name]
-            mode_options = ["Direct copy from current data", "Lookup from reference file (XLOOKUP)", "Formula", "Static value"]
-
-            for header in st.session_state.template_headers:
-                with st.expander(f"🔧 {header}"):
-                    mode = st.selectbox(
-                        "How should this column be filled?", mode_options,
-                        key=f"tpl_mode_{header}"
-                    )
-
-                    if mode == mode_options[0]:
-                        st.selectbox("Copy from column", df.columns, key=f"tpl_direct_{header}")
-
-                    elif mode == mode_options[1]:
-                        if not other_sources:
-                            st.warning("Load a reference file (another data source) to use a lookup here.")
-                        else:
-                            ref_source = st.selectbox("Reference source", other_sources, key=f"tpl_ref_{header}")
-                            ref_df = st.session_state.data_sources[ref_source]
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                st.selectbox("Match using column (current data)", df.columns, key=f"tpl_key_{header}")
-                            with col2:
-                                st.selectbox("Match against column (reference)", ref_df.columns, key=f"tpl_refkey_{header}")
-                            st.selectbox("Return this column from reference", ref_df.columns, key=f"tpl_return_{header}")
-                            st.text_input("Default value if not found (optional)", key=f"tpl_default_{header}")
-
-                    elif mode == mode_options[2]:
-                        st.text_area(
-                            "Formula (supports [Columns], XLOOKUP('Source','Key','Return'), IF/THEN/ELSE, etc.)",
-                            "[Column1]", key=f"tpl_formula_{header}"
-                        )
-
-                    else:
-                        st.text_input("Static value for every row", key=f"tpl_static_{header}")
-
-            if st.button("🏗️ Build Output From Template", use_container_width=True, key="tpl_build_btn"):
-                all_sources = st.session_state.data_sources
-                column_configs = {}
-                for header in st.session_state.template_headers:
-                    mode = st.session_state.get(f"tpl_mode_{header}", mode_options[0])
-                    if mode == mode_options[0]:
-                        column_configs[header] = {
-                            'mode': 'direct',
-                            'source_column': st.session_state.get(f"tpl_direct_{header}")
-                        }
-                    elif mode == mode_options[1]:
-                        column_configs[header] = {
-                            'mode': 'lookup',
-                            'ref_source': st.session_state.get(f"tpl_ref_{header}"),
-                            'key_column': st.session_state.get(f"tpl_key_{header}"),
-                            'ref_key_column': st.session_state.get(f"tpl_refkey_{header}"),
-                            'ref_return_column': st.session_state.get(f"tpl_return_{header}"),
-                            'default': st.session_state.get(f"tpl_default_{header}") or None
-                        }
-                    elif mode == mode_options[2]:
-                        formula_text = st.session_state.get(f"tpl_formula_{header}", "")
-                        column_configs[header] = {
-                            'mode': 'formula',
-                            'formula': formula_text,
-                            'referenced_sources': detect_referenced_source_names(formula_text, all_sources.keys())
-                        }
-                    else:
-                        column_configs[header] = {
-                            'mode': 'static',
-                            'value': st.session_state.get(f"tpl_static_{header}", '')
-                        }
-
-                result_df = MultiSheetProcessor.build_template_output(
-                    df, st.session_state.template_headers, column_configs, all_sources
-                )
-                result_name = f"{source_name}_template_output"
-                st.session_state.data_sources[result_name] = result_df
-                st.session_state.source_metadata[result_name] = {
-                    'file': 'Template Output', 'sheet': 'Built',
-                    'rows': len(result_df), 'columns': len(result_df.columns)
-                }
-                build_op = {
-                    'type': 'build_template',
-                    'template_headers': list(st.session_state.template_headers),
-                    'column_configs': column_configs
-                }
-                st.session_state.source_snapshots[result_name] = df.copy()
-                st.session_state.operations = [build_op]
-                st.session_state.operations_undo_stack = []
-                st.session_state.active_source = result_name
-                st.success(f"✅ Built output '{result_name}' with {len(result_df)} rows")
-                st.rerun()
-
-    # Standard Operations
-    st.divider()
-    st.header("⚡ Data Operations")
-
-    if st.session_state.current_operation:
-        col1, col2 = st.columns([6, 1])
-        with col2:
-            if st.button("❌ Close", use_container_width=True, key="close_op_btn"):
-                st.session_state.current_operation = None
-                st.rerun()
-
-    if not st.session_state.current_operation:
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            if st.button("🔍 Filter Rows", use_container_width=True, key="op_filter_btn"):
-                st.session_state.current_operation = "filter"; st.rerun()
-            if st.button("🔍 Multiple Filters", use_container_width=True, key="op_multi_filter_btn"):
-                st.session_state.current_operation = "filter_multiple"; st.rerun()
-            if st.button("📐 Add Column", use_container_width=True, key="op_calc_btn"):
-                st.session_state.current_operation = "calc"; st.rerun()
-            if st.button("📊 Group By", use_container_width=True, key="op_group_btn"):
-                st.session_state.current_operation = "group"; st.rerun()
-        with col2:
-            if st.button("🔃 Sort Data", use_container_width=True, key="op_sort_btn"):
-                st.session_state.current_operation = "sort"; st.rerun()
-            if st.button("✏️ Rename Column", use_container_width=True, key="op_rename_btn"):
-                st.session_state.current_operation = "rename"; st.rerun()
-            if st.button("🗑️ Drop Column", use_container_width=True, key="op_drop_btn"):
-                st.session_state.current_operation = "drop"; st.rerun()
-        with col3:
-            if st.button("📥 Append Data", use_container_width=True, key="op_append_btn"):
-                st.session_state.current_operation = "append"; st.rerun()
-            if st.button("📈 Pivot Table", use_container_width=True, key="op_pivot_btn"):
-                st.session_state.current_operation = "pivot"; st.rerun()
-            if st.button("📊 Summarize by Ref", use_container_width=True, key="op_summarize_btn"):
-                st.session_state.current_operation = "summarize"; st.rerun()
-        with col4:
-            if st.button("💾 Execute All", use_container_width=True, key="op_execute_btn"):
-                st.session_state.current_operation = "execute"; st.rerun()
-            if st.button("📥 Export", use_container_width=True, key="op_export_btn"):
-                st.session_state.current_operation = "export"; st.rerun()
-
-    if st.session_state.current_operation:
-        st.divider()
-        st.markdown('<div class="operation-active">', unsafe_allow_html=True)
-        st.markdown(f"### 🔧 Operation: {st.session_state.current_operation.title()}")
-
-        op_selected = st.session_state.current_operation
-
-        if op_selected == "filter":
-            col1, col2 = st.columns(2)
-            with col1:
-                column = st.selectbox("Select column to filter", df.columns, key="filter_column")
-                # Show column info
-                dtype = df[column].dtype
-                st.caption(f"Data type: {dtype}")
-                
-                # Show unique values count
-                unique_count = df[column].nunique()
-                st.caption(f"Unique values: {unique_count}")
-                
-            with col2:
-                operation = st.selectbox("Operation", ['==', '!=', '>', '<', '>=', '<=', 'contains'], key="filter_operation")
-                
-                # DROPDOWN FOR FILTER VALUES
-                if dtype == 'object' or pd.api.types.is_string_dtype(dtype):
-                    # For text columns - show dropdown with unique values
-                    unique_values, has_more = get_unique_values_sorted(df, column)
-                    if unique_values:
-                        if has_more:
-                            st.caption(f"Showing first {len(unique_values)} of {df[column].nunique()} values")
-                        value = st.selectbox(
-                            "Select value to filter", 
-                            options=unique_values,
-                            key="filter_value_dropdown"
-                        )
-                    else:
-                        value = st.text_input("Enter value to filter", key="filter_value_text")
-                
-                elif pd.api.types.is_datetime64_any_dtype(dtype):
-                    # For date columns - show date picker
-                    st.caption("Date column detected - select a date")
-                    min_date = df[column].min()
-                    max_date = df[column].max()
-                    st.caption(f"Date range: {min_date.date()} to {max_date.date()}")
-                    min_d = min_date.date() if pd.notna(min_date) else None
-                    max_d = max_date.date() if pd.notna(max_date) else None
-                    # Default to today only if today actually falls within the
-                    # data's range; otherwise default to the closest valid date.
-                    # Using "today" unconditionally breaks st.date_input whenever
-                    # the data doesn't happen to span today (a StreamlitAPIException).
-                    today = pd.Timestamp.now().date()
-                    if min_d is not None and today < min_d:
-                        default_d = min_d
-                    elif max_d is not None and today > max_d:
-                        default_d = max_d
-                    else:
-                        default_d = today
-                    value = st.date_input(
-                        "Select date", 
-                        value=default_d,
-                        min_value=min_d,
-                        max_value=max_d,
-                        key="filter_date_value"
-                    )
-                    value = value.strftime("%Y-%m-%d")
-                
-                elif pd.api.types.is_numeric_dtype(dtype):
-                    # For numeric columns - show number input
-                    min_val = df[column].min()
-                    max_val = df[column].max()
-                    st.caption(f"Range: {min_val} to {max_val}")
-                    
-                    # For operations that compare, show number input
-                    if operation in ['==', '!=']:
-                        # For equality, show dropdown of unique values if not too many
-                        unique_values, has_more = get_unique_values_sorted(df, column)
-                        if len(unique_values) <= 50:  # Only show dropdown for reasonable number of unique values
-                            if has_more:
-                                st.caption(f"Showing first {len(unique_values)} of {df[column].nunique()} values")
-                            value = st.selectbox(
-                                "Select value", 
-                                options=unique_values,
-                                key="filter_numeric_dropdown"
-                            )
-                        else:
-                            value = st.number_input(
-                                "Enter value",
-                                value=float(min_val) if pd.notna(min_val) else 0.0,
-                                key="filter_numeric_input"
-                            )
-                    else:
-                        # For comparison operations, use number input
-                        value = st.number_input(
-                            "Enter value",
-                            value=float(min_val) if pd.notna(min_val) else 0.0,
-                            key="filter_numeric_input"
-                        )
-                else:
-                    # Fallback - text input
-                    value = st.text_input("Enter value to filter", key="filter_value_fallback")
-
-            if st.button("✅ Apply Filter", use_container_width=True, key="apply_filter_btn"):
-                # Convert value to string for contains operation
-                if operation == 'contains':
-                    value = str(value)
-                new_df = MultiSheetProcessor.filter_rows(df, column, operation, value)
-                if len(new_df) < len(df):
-                    push_undo_snapshot()
-                    st.session_state.operations.append({
-                        'type': 'filter', 'column': column, 'operation': operation, 'value': str(value)
-                    })
-                    recompute_active_source()
-                    st.success(f"✅ Filtered from {len(df)} to {len(new_df)} rows")
-                    st.rerun()
-                else:
-                    st.warning("No rows were filtered. Check your filter criteria.")
-
-        elif op_selected == "filter_multiple":
-            st.info(
-                "Add multiple filter conditions, then choose how they combine. "
-                "**AND** = a row must match every condition (use this for narrowing down, "
-                "e.g. Status == Pending AND Region == East). "
-                "**OR** = a row must match at least one condition (use this to combine "
-                "alternatives on the same column, e.g. Status == Pending OR Status == In Review — "
-                "AND can never match this since one column can't equal two values at once)."
-            )
-            st.session_state.filter_logic = st.radio(
-                "Combine conditions using",
-                ["AND", "OR"],
-                index=0 if st.session_state.filter_logic == "AND" else 1,
-                horizontal=True,
-                key="multi_filter_logic_radio"
-            )
-
-            # Add new condition
-            col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
-            with col1:
-                new_column = st.selectbox("Column", df.columns, key="multi_filter_col")
-            with col2:
-                ops_list = ['==', '!=', '>', '<', '>=', '<=', 'contains']
-                new_operation = st.selectbox("Operation", ops_list, key="multi_filter_op")
-            with col3:
-                # Get unique values for dropdown
-                dtype = df[new_column].dtype
-                if pd.api.types.is_datetime64_any_dtype(dtype):
-                    # Date input
-                    st.caption("Select date")
-                    min_date = df[new_column].min()
-                    max_date = df[new_column].max()
-                    min_d = min_date.date() if pd.notna(min_date) else None
-                    max_d = max_date.date() if pd.notna(max_date) else None
-                    today = pd.Timestamp.now().date()
-                    if min_d is not None and today < min_d:
-                        default_d = min_d
-                    elif max_d is not None and today > max_d:
-                        default_d = max_d
-                    else:
-                        default_d = today
-                    new_value = st.date_input(
-                        "Date", 
-                        value=default_d,
-                        min_value=min_d,
-                        max_value=max_d,
-                        key="multi_filter_date"
-                    )
-                    new_value = new_value.strftime("%Y-%m-%d")
-                elif dtype == 'object' or pd.api.types.is_string_dtype(dtype):
-                    # Text dropdown
-                    unique_values, has_more = get_unique_values_sorted(df, new_column)
-                    if unique_values:
-                        if has_more:
-                            st.caption(f"Showing first {len(unique_values)} values")
-                        new_value = st.selectbox(
-                            "Value", 
-                            options=unique_values,
-                            key="multi_filter_text_dropdown"
-                        )
-                    else:
-                        new_value = st.text_input("Value", key="multi_filter_text")
-                elif pd.api.types.is_numeric_dtype(dtype):
-                    # Numeric input
-                    min_val = df[new_column].min()
-                    max_val = df[new_column].max()
-                    st.caption(f"Range: {min_val} to {max_val}")
-                    unique_values, has_more = get_unique_values_sorted(df, new_column)
-                    if len(unique_values) <= 50:
-                        new_value = st.selectbox(
-                            "Value", 
-                            options=unique_values,
-                            key="multi_filter_num_dropdown"
-                        )
-                    else:
-                        new_value = st.number_input(
-                            "Value",
-                            value=float(min_val) if pd.notna(min_val) else 0.0,
-                            key="multi_filter_num"
-                        )
-                else:
-                    new_value = st.text_input("Value", key="multi_filter_fallback")
-            with col4:
-                if st.button("➕ Add", key="add_filter_condition"):
-                    if new_column and new_value is not None:
-                        st.session_state.filter_conditions.append({
-                            'column': new_column,
-                            'operation': new_operation,
-                            'value': str(new_value)
-                        })
-                        st.rerun()
-            
-            # Show existing conditions
-            if st.session_state.filter_conditions:
-                joiner = f" {st.session_state.filter_logic} "
-                st.write(f"Current filter conditions (combined with **{st.session_state.filter_logic}**):")
-                for i, cond in enumerate(st.session_state.filter_conditions):
-                    col1, col2 = st.columns([5, 1])
-                    with col1:
-                        prefix = "" if i == 0 else f"{st.session_state.filter_logic} "
-                        st.write(f"{i+1}. {prefix}{cond['column']} {cond['operation']} {cond['value']}")
-                    with col2:
-                        if st.button("🗑️", key=f"remove_filter_{i}"):
-                            st.session_state.filter_conditions.pop(i)
-                            st.rerun()
-                
-                if st.button("✅ Apply All Filters", use_container_width=True):
-                    logic = st.session_state.filter_logic
-                    new_df = MultiSheetProcessor.filter_multiple_rows(df, st.session_state.filter_conditions, logic)
-                    push_undo_snapshot()
-                    st.session_state.operations.append({
-                        'type': 'filter_multiple',
-                        'conditions': st.session_state.filter_conditions.copy(),
-                        'logic': logic
-                    })
-                    st.session_state.filter_conditions = []  # Clear after applying
-                    recompute_active_source()
-                    st.success(f"✅ Filtered from {len(df)} to {len(new_df)} rows")
-                    st.rerun()
-            else:
-                st.info("Add at least one filter condition above")
-
-        elif op_selected == "calc":
-            st.info("""
-            **Formula Examples:**
-            - `[Sales] * 0.1` (10% commission)
-            - `([Price] - [Cost]) / [Cost] * 100` (profit margin %)
-            - `[First Name] + ' ' + [Last Name]` (full name)
-            - `IF [Sales] > 1000 THEN 'High' ELSE 'Low' END`
-            - `abs([Value])` (absolute value)
-            - `round([Price], 2)` (round to 2 decimals)
-            - `upper([Name])` / `lower([Name])`
-            - `XLOOKUP([Product ID], 'Products', 'ID', 'Unit Price')` — Excel-XLOOKUP-style
-              lookup into any other loaded sheet/file. Optional 5th argument is a
-              fallback value for no match, e.g. `XLOOKUP([SKU], 'Catalog', 'SKU', 'Price', 0)`
-            """)
-            new_column = st.text_input("New column name", f"calculated_{len(df.columns)}", key="calc_newcol")
-            formula = st.text_area("Formula", "[Column1] + [Column2]", key="calc_formula")
-
-            if st.button("✅ Add Column", use_container_width=True, key="apply_calc_btn"):
-                if new_column and formula:
-                    all_sources = st.session_state.data_sources
-                    new_df = MultiSheetProcessor.add_calculated_column(df, new_column, formula, all_sources)
-                    if new_column in new_df.columns:
-                        push_undo_snapshot()
-                        referenced = detect_referenced_source_names(formula, all_sources.keys())
-                        st.session_state.operations.append({
-                            'type': 'calc_column', 'new_column': new_column, 'formula': formula,
-                            'referenced_sources': referenced
-                        })
-                        recompute_active_source()
-                        st.success(f"✅ Added column: {new_column}")
-                        st.rerun()
-                else:
-                    st.warning("Please provide both column name and formula")
-
-        elif op_selected == "group":
-            if len(df.columns) < 2:
-                st.warning("Group By needs at least 2 columns (one to group by, one to aggregate).")
-                st.stop()
-            col1, col2 = st.columns(2)
-            with col1:
-                group_col = st.selectbox("Group by column", df.columns, key="group_by_col")
-            with col2:
-                agg_col = st.selectbox("Column to aggregate", [c for c in df.columns if c != group_col], key="group_agg_col")
-            agg_func = st.selectbox("Aggregation function", ['sum', 'mean', 'median', 'min', 'max', 'count', 'std'], key="group_agg_func")
-
-            if st.button("✅ Apply Group By", use_container_width=True, key="apply_group_btn"):
-                new_df = MultiSheetProcessor.group_by(df, group_col, agg_col, agg_func)
-                push_undo_snapshot()
-                st.session_state.operations.append({
-                    'type': 'group_by', 'group_column': group_col,
-                    'aggregate_column': agg_col, 'function': agg_func
-                })
-                recompute_active_source()
-                st.success(f"✅ Grouped data: {len(new_df)} groups")
-                st.rerun()
-
-        elif op_selected == "sort":
-            sort_col = st.selectbox("Sort by column", df.columns, key="sort_col")
-            ascending = st.radio("Order", ["Ascending", "Descending"], horizontal=True, key="sort_order")
-
-            if st.button("✅ Apply Sort", use_container_width=True, key="apply_sort_btn"):
-                push_undo_snapshot()
-                st.session_state.operations.append({
-                    'type': 'sort', 'column': sort_col, 'ascending': ascending == "Ascending"
-                })
-                recompute_active_source()
-                st.success(f"✅ Sorted by {sort_col}")
-                st.rerun()
-
-        elif op_selected == "rename":
-            old_name = st.selectbox("Select column to rename", df.columns, key="rename_old")
-            new_name = st.text_input("New name", f"{old_name}_new", key="rename_new")
-
-            if st.button("✅ Apply Rename", use_container_width=True, key="apply_rename_btn"):
-                if new_name and new_name not in df.columns:
-                    push_undo_snapshot()
-                    st.session_state.operations.append({
-                        'type': 'rename', 'old_name': old_name, 'new_name': new_name
-                    })
-                    recompute_active_source()
-                    st.success(f"✅ Renamed '{old_name}' to '{new_name}'")
-                    st.rerun()
-                else:
-                    st.warning("New name is empty or already exists")
-
-        elif op_selected == "drop":
-            col_to_drop = st.selectbox("Select column to drop", df.columns, key="drop_col")
-            confirmed = st.checkbox(f"Confirm dropping '{col_to_drop}'", key="drop_confirm")
-
-            if st.button("✅ Apply Drop", use_container_width=True, key="apply_drop_btn", disabled=not confirmed):
-                push_undo_snapshot()
-                st.session_state.operations.append({'type': 'drop', 'column': col_to_drop})
-                recompute_active_source()
-                st.success(f"✅ Dropped column: {col_to_drop}")
-                st.rerun()
-
-        elif op_selected == "append":
-            st.info("Append rows from another data source to the current data")
-            append_source = st.selectbox(
-                "Source to append",
-                [s for s in st.session_state.data_sources.keys() if s != source_name],
-                key="append_source_select"
-            )
-            if append_source:
-                append_df = st.session_state.data_sources[append_source]
-                st.write(f"Will append {len(append_df)} rows from '{append_source}'")
-                missing_cols = [c for c in df.columns if c not in append_df.columns]
-                if missing_cols:
-                    st.warning(f"Missing columns in append source: {missing_cols}")
-                    st.write("They will be filled with NaN")
-
-                if st.button("✅ Append Data", use_container_width=True, key="apply_append_btn"):
-                    new_df = MultiSheetProcessor.append_data(df, append_df)
-                    push_undo_snapshot()
-                    st.session_state.operations.append({'type': 'append', 'append_source': append_source})
-                    recompute_active_source()
-                    st.success(f"✅ Appended {len(append_df)} rows. New total: {len(new_df)}")
-                    st.rerun()
-
-        elif op_selected == "pivot":
-            if len(df.columns) < 3:
-                st.warning("Pivot Table needs at least 3 columns (index, columns, and values).")
-                st.stop()
-            col1, col2 = st.columns(2)
-            with col1:
-                index = st.selectbox("Index column", df.columns, key="pivot_index")
-                columns = st.selectbox("Columns to pivot", [c for c in df.columns if c != index], key="pivot_columns")
-            with col2:
-                values = st.selectbox("Values column", [c for c in df.columns if c not in [index, columns]], key="pivot_values")
-                aggfunc = st.selectbox("Aggregation", ['sum', 'mean', 'count', 'min', 'max'], key="pivot_aggfunc")
-
-            if st.button("✅ Create Pivot Table", use_container_width=True, key="apply_pivot_btn"):
-                new_df = MultiSheetProcessor.pivot_table(df, index, columns, values, aggfunc)
-                push_undo_snapshot()
-                st.session_state.operations.append({
-                    'type': 'pivot', 'index': index, 'columns': columns,
-                    'values': values, 'aggfunc': aggfunc
-                })
-                recompute_active_source()
-                st.success(f"✅ Pivot table created: {len(new_df)} rows")
-                st.rerun()
-
-        elif op_selected == "summarize":
-            st.info("Summarize data and join with reference data")
-            ref_source = st.selectbox(
-                "Reference source",
-                [s for s in st.session_state.data_sources.keys() if s != source_name],
-                key="summarize_ref_source"
-            )
-            if ref_source:
-                ref_df = st.session_state.data_sources[ref_source]
-                col1, col2 = st.columns(2)
-                with col1:
-                    group_col = st.selectbox("Group by column in current data", df.columns, key="summarize_group_col")
-                    ref_col = st.selectbox("Reference column", ref_df.columns, key="summarize_ref_col")
-                with col2:
-                    agg_col = st.selectbox("Column to aggregate", [c for c in df.columns if c != group_col], key="summarize_agg_col")
-                    agg_func = st.selectbox("Aggregation function", ['sum', 'mean', 'count', 'min', 'max'], key="summarize_agg_func")
-
-                if st.button("✅ Summarize", use_container_width=True, key="apply_summarize_btn"):
-                    new_df = MultiSheetProcessor.summarize_by_reference(df, group_col, agg_col, ref_df, ref_col, agg_func)
-                    push_undo_snapshot()
-                    st.session_state.operations.append({
-                        'type': 'summarize_by_ref', 'ref_source': ref_source,
-                        'group_col': group_col, 'agg_col': agg_col,
-                        'ref_col': ref_col, 'agg_func': agg_func
-                    })
-                    recompute_active_source()
-                    st.success(f"✅ Summarized data: {len(new_df)} rows")
-                    st.rerun()
-
-        elif op_selected == "execute":
-            if st.session_state.operations:
-                st.info(
-                    "Each step already reruns automatically as you build. Use this if a "
-                    "reference source changed and you want to refresh the result."
-                )
-                st.subheader(f"Current recipe on '{source_name}' ({len(st.session_state.operations)} step(s)):")
-                for i, op in enumerate(st.session_state.operations, 1):
-                    st.write(f"{i}. {describe_operation(op)}")
-
-                if st.button("🔄 Recompute From Scratch", use_container_width=True, key="execute_all_btn"):
-                    recompute_active_source()
-                    new_df = st.session_state.data_sources[source_name]
-                    st.success(f"✅ Recomputed! New shape: {new_df.shape}")
-                    st.rerun()
-            else:
-                st.info("No operations to execute")
-
-        elif op_selected == "export":
-            st.subheader("📥 Export Data")
-            export_option = st.radio(
-                "Export:", ["Current source only", "All sources (multiple sheets)"],
-                horizontal=True, key="export_option"
-            )
-
-            if export_option == "Current source only":
-                col1, col2 = st.columns(2)
-                with col1:
-                    csv = df.to_csv(index=False)
-                    st.download_button(
-                        "📊 Download CSV", data=csv, file_name=f"{source_name}.csv",
-                        mime="text/csv", use_container_width=True, key="download_csv_btn"
-                    )
-                with col2:
-                    excel_data = to_excel_bytes({source_name: df})
-                    st.download_button(
-                        "📊 Download Excel", data=excel_data, file_name=f"{source_name}.xlsx",
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        use_container_width=True, key="download_xlsx_btn"
-                    )
-            else:
-                excel_data = to_excel_bytes(st.session_state.data_sources)
-                st.download_button(
-                    "📊 Download All Sources",
-                    data=excel_data,
-                    file_name=f"all_sources_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    use_container_width=True, key="download_all_btn"
-                )
-
-            st.info(f"📊 Exporting {len(df)} rows and {len(df.columns)} columns")
-
-        st.markdown('</div>', unsafe_allow_html=True)
-
-else:
-    st.divider()
-    if st.session_state.data_sources:
-        st.markdown(f"""
-        <div style="text-align: center; padding: 30px;">
-            <h2>📊 Select a Data Source</h2>
-            <p>Click on any source in the sidebar to start processing</p>
-            <p style="color: #666; font-size: 0.9rem;">
-                You have <strong>{len(st.session_state.data_sources)}</strong> data sources loaded
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
-        st.subheader("📋 All Loaded Sources")
-        for name, df in st.session_state.data_sources.items():
-            with st.expander(f"📊 {name} ({len(df)} rows, {len(df.columns)} cols)"):
-                st.dataframe(df.head(), use_container_width=True)
-    else:
-        st.markdown("""
-        <div style="text-align: center; padding: 50px;">
-            <h2>🚀 Welcome to Multi-Sheet Data Processing!</h2>
-            <p style="font-size: 1.2rem; color: #666;">
-                Upload Excel files or CSVs to get started
-            </p>
-            <div style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                <h4>✨ What you can do:</h4>
-                <p>📚 Load multiple Excel sheets and files</p>
-                <p>🔗 Create relationships between data sources (like Excel VLOOKUP)</p>
-                <p>🔄 Reference data across sheets for filtering and calculations</p>
-                <p>📊 Process data step by step with a visual interface</p>
-                <p>💾 Save your process as a recipe you can reuse</p>
-                <p>🤖 Run a saved recipe automatically on new reports</p>
-                <p>📥 Export as single or multiple sheets</p>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<h3 style="font-family: \'Outfit\', sans-serif; color: #9b51e0; text-align: center; margin-top: 10px; margin-bottom: 20px;">📖 Step-by-Step User Guide</h3>', unsafe_allow_html=True)
+        st.components.v1.html(steps_html, height=270)
 
 st.divider()
 st.markdown("""
-<div style="text-align: center; color: #666; font-size: 0.9rem;">
-    Multi-Sheet Data Processing Wizard v2.1 | Built with Streamlit and Pandas
+<div style="text-align: center; color: #64748b; font-size: 0.85rem; padding: 15px 0;">
+    DataWiz v2.1 | Powered by Streamlit, Pandas & Advanced UI Engine
 </div>
 """, unsafe_allow_html=True)
